@@ -1,0 +1,9 @@
+name: MineCompany
+main: net.daniel.MineCompany.MineCompanyPlugin
+version: 1.2.0
+description: >
+             Minecraft Company Plugin
+commands:
+  회사:
+  회사관리:
+  회사계정이전:
