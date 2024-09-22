@@ -50,9 +50,7 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
                             }
 
                         } else {
-
                             sender.sendMessage(Lang.COMPANY_INFO_ADMIN_HELP.toString());
-
                         }
 
                         break;
@@ -71,52 +69,52 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
 
                         if (args.length == 2) {
 
-                            if (MCUtils.mustBeInteger(args[1], sender)) {
-                                int page = Integer.parseInt(args[1]);
-                                SimpleDateFormat format = new SimpleDateFormat(
-                                        Lang.TIME_FORMAT_FOR_LIST.toString());
-                                String time = format.format(MineCompanyPlugin.getLastsortedTime());
-                                if (page == 1 && size == 0) {
-                                    sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
-                                            new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
-                                            time, Lang.EMPTY_LIST, 1, maxPageString));
+                            if (!MCUtils.mustBeInteger(args[1], sender)) {
+                                return;
 
-                                    break;
-                                } else if (page > 0 && page <= maxPage) {
+                            }
 
-                                    String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
-                                            new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
-                                            time, MCUtils.getCompanyListString(page, maxPage, perPage,
-                                                    Lang.COMPANY_LIST_LINE),
-                                            page, maxPageString);
+                            int page = Integer.parseInt(args[1]);
+                            SimpleDateFormat format = new SimpleDateFormat(
+                                    Lang.TIME_FORMAT_FOR_LIST.toString());
+                            String time = format.format(MineCompanyPlugin.getLastsortedTime());
+                            if (page == 1 && size == 0) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
+                                        time, Lang.EMPTY_LIST, 1, maxPageString));
 
-                                    sender.sendMessage(list);
+                                break;
+                            } else if (page > 0 && page <= maxPage) {
 
-                                } else {
+                                String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
+                                        time, MCUtils.getCompanyListString(page, maxPage, perPage,
+                                                Lang.COMPANY_LIST_LINE),
+                                        page, maxPageString);
 
-                                    sender.sendMessage(
-                                            Lang.withPlaceHolder(Lang.INVAILED_PAGE, "%max%", maxPageString));
-                                }
+                                sender.sendMessage(list);
 
+                            } else {
+
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.INVAILED_PAGE, "%max%", maxPageString));
                             }
 
                         } else if (args.length == 1) {
                             SimpleDateFormat format = new SimpleDateFormat(Lang.TIME_FORMAT_FOR_LIST.toString());
                             String time = format.format(MineCompanyPlugin.getLastsortedTime());
-                            if (size > 0) {
-
-                                String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
-                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
-                                        MCUtils.getCompanyListString(1, maxPage, perPage, Lang.COMPANY_LIST_LINE),
-                                        1, maxPageString);
-
-                                sender.sendMessage(list);
-
-                            } else {
+                            if (size <= 0) {
                                 sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
                                         new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
                                         Lang.EMPTY_LIST, 1, maxPageString));
+                                return;
                             }
+                            String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                    new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
+                                    MCUtils.getCompanyListString(1, maxPage, perPage, Lang.COMPANY_LIST_LINE),
+                                    1, maxPageString);
+
+                            sender.sendMessage(list);
 
                         } else {
                             sender.sendMessage(Lang.COMPANY_LIST_ADMIN_HELP.toString());
@@ -142,49 +140,46 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
                         String time = format.format(MineCompanyPlugin.getLastsortedTime());
                         if (args.length == 2) {
 
-                            if (MCUtils.mustBeInteger(args[1], sender)) {
-                                int page = Integer.parseInt(args[1]);
-                                if (page == 1 && size == 0) {
-                                    sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
-                                            new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
-                                            time, Lang.EMPTY_LIST, 1, maxPageString));
-
-                                    break;
-                                } else if (page > 0 && page <= maxPage) {
-
-                                    String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
-                                            new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
-                                            time, MCUtils.getCompanyListString(page, maxPage, perPage,
-                                                    Lang.NAME_WITH_OWNER),
-                                            page, maxPageString);
-
-                                    sender.sendMessage(list);
-
-                                } else {
-
-                                    sender.sendMessage(
-                                            Lang.withPlaceHolder(Lang.INVAILED_PAGE, "%max%", maxPageString));
-                                }
-
+                            if (!MCUtils.mustBeInteger(args[1], sender)) {
+                                return;
                             }
+                            int page = Integer.parseInt(args[1]);
+                            if (page == 1 && size == 0) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
+                                        time, Lang.EMPTY_LIST, 1, maxPageString));
 
-                        } else if (args.length == 1) {
-
-                            if (size > 0) {
+                                break;
+                            } else if (page > 0 && page <= maxPage) {
 
                                 String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
-                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
-                                        MCUtils.getCompanyListString(1, maxPage, perPage, Lang.NAME_WITH_OWNER), 1,
-                                        maxPageString);
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
+                                        time, MCUtils.getCompanyListString(page, maxPage, perPage,
+                                                Lang.NAME_WITH_OWNER),
+                                        page, maxPageString);
 
                                 sender.sendMessage(list);
 
                             } else {
+
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.INVAILED_PAGE, "%max%", maxPageString));
+                            }
+                        } else if (args.length == 1) {
+
+                            if (size <= 0) {
                                 sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
                                         new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
                                         Lang.EMPTY_LIST, 1, maxPageString));
+                                return;
                             }
 
+                            String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                    new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
+                                    MCUtils.getCompanyListString(1, maxPage, perPage, Lang.NAME_WITH_OWNER), 1,
+                                    maxPageString);
+
+                            sender.sendMessage(list);
                         } else {
                             sender.sendMessage(Lang.COMPANY_LIST_WITH_OWNER_HELP.toString());
                         }
@@ -193,14 +188,13 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
                     case "조회":
                         if (args.length == 2) {
                             Company company = CompanyFuns.getCompany(args[1]);
-                            if (company != null) {
-                                sender.sendMessage(Lang.withPlaceHolder(Lang.PLAYER_LOOKUP_COMPANY,
-                                        new String[]{"%target%", "%company%"}, args[1], company.getName()));
-                            } else {
+                            if (company == null) {
                                 sender.sendMessage(
                                         Lang.withPlaceHolder(Lang.PLAYER_HAS_NO_COMPANY, "%target%", args[1]));
+                                return;
                             }
-
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.PLAYER_LOOKUP_COMPANY,
+                                    new String[]{"%target%", "%company%"}, args[1], company.getName()));
                         } else {
                             sender.sendMessage(Lang.LOOKUP_PLAYER_COMPANY_HELP.toString());
                         }
@@ -209,36 +203,35 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
 
                     case "회장이전":
 
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_ADMIN_MANDATE_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
 
-                                if (company.isMember(args[2]) || company.isSubLeader(args[2])) {
-                                    String leaderBefore = company.getLeader();
+                            if (company.isMember(args[2]) || company.isSubLeader(args[2])) {
+                                String leaderBefore = company.getLeader();
 
-                                    company.changeLeader(leaderBefore, args[2]);
-
-
-                                    MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_MANDATE_DONE,
-                                            new String[]{"%company%", "%from%", "%after%"}, company.getName(),
-                                            leaderBefore, args[2]));
-
-                                } else if (company.isLeader(args[2])) {
+                                company.changeLeader(leaderBefore, args[2]);
 
 
-                                    sender.sendMessage(Lang.withPlaceHolder(Lang.ALREADY_HAS_COMPANY,
-                                            new String[]{"%target%", "%company%"}, args[2], args[1]));
-                                } else {
-                                    sender.sendMessage(Lang.withPlaceHolder(Lang.ADMIN_CANNOT_MANDATE_NOT_MEMEBER,
-                                            new String[]{"%target%", "%company%"}, args[2], args[1]));
+                                MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_MANDATE_DONE,
+                                        new String[]{"%company%", "%from%", "%after%"}, company.getName(),
+                                        leaderBefore, args[2]));
+
+                            } else if (company.isLeader(args[2])) {
 
 
-                                }
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.ALREADY_HAS_COMPANY,
+                                        new String[]{"%target%", "%company%"}, args[2], args[1]));
+                            } else {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.ADMIN_CANNOT_MANDATE_NOT_MEMEBER,
+                                        new String[]{"%target%", "%company%"}, args[2], args[1]));
+
 
                             }
 
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_ADMIN_MANDATE_HELP.toString());
                         }
 
                         break;
@@ -261,36 +254,34 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
 
                     case "추가":
 
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_ADMIN_ADD_MEMBER_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
 
-                                if (MCUtils.mustHasNoCompany(args[2], sender)) {
-                                    if (company.getMaxSize() > company.getTeamSize()) {
-                                        company.addMember(args[2]);
-
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_ADD_MEMBER,
-                                                new String[]{"%target%", "%company%"}, args[2],
-                                                company.getName()));
-
-
-                                        MCUtils.sendMsgTo(args[2],
-                                                Lang.withPlaceHolder(Lang.COMPANY_FORCE_ADD_MEMBER_TO_TARGET,
-                                                        "%company%", company.getName()));
-
-                                    } else {
-
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.CANNOT_ADD_MAXSIZE_LIMIT,
-                                                "%max%", company.getMaxSize()));
-
-                                    }
-
-                                }
+                            if (!MCUtils.mustHasNoCompany(args[2], sender)) {
+                                return;
+                            }
+                            if (!(company.getMaxSize() > company.getTeamSize())) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.CANNOT_ADD_MAXSIZE_LIMIT,
+                                        "%max%", company.getMaxSize()));
+                                return;
 
                             }
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_ADMIN_ADD_MEMBER_HELP.toString());
+
+                            company.addMember(args[2]);
+
+
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_ADD_MEMBER,
+                                    new String[]{"%target%", "%company%"}, args[2],
+                                    company.getName()));
+
+
+                            MCUtils.sendMsgTo(args[2],
+                                    Lang.withPlaceHolder(Lang.COMPANY_FORCE_ADD_MEMBER_TO_TARGET,
+                                            "%company%", company.getName()));
                         }
 
                         break;
@@ -299,33 +290,26 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
 
                         if (args.length == 3) {
 
-                            if (MCUtils.mustVaildName(args[1], sender)) {
-                                if (MCUtils.mustHasNoCompany(args[2], sender)) {
-
-                                    if (CompanyFuns.mustNonExistCompany(args[1], sender)) {
-                                        if (CompanyFuns.createCompany(args[1], args[2])) {
-
-
-                                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.CREATED_COMPANY_ADMIN,
-                                                    new String[]{"%company%", "%player%", "%target%"}, args[1],
-                                                    sender.getName(), args[2]));
-
-                                            MineCompanyPlugin.calcCompanyList();
-
-                                        } else {
-
-
-                                            sender.sendMessage(Lang.withPlaceHolder(Lang.FAILED_CREATE_COMPANY,
-                                                    "%company%", args[1]));
-
-                                        }
-
-                                    }
-
-
-                                }
+                            if (!MCUtils.mustVaildName(args[1], sender)) {
+                                return;
+                            }
+                            if (!MCUtils.mustHasNoCompany(args[2], sender)) {
+                                return;
+                            }
+                            if (!CompanyFuns.mustNonExistCompany(args[1], sender)) {
+                                return;
+                            }
+                            if (!CompanyFuns.createCompany(args[1], args[2])) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.FAILED_CREATE_COMPANY,
+                                        "%company%", args[1]));
+                                return;
                             }
 
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.CREATED_COMPANY_ADMIN,
+                                    new String[]{"%company%", "%player%", "%target%"}, args[1],
+                                    sender.getName(), args[2]));
+
+                            MineCompanyPlugin.calcCompanyList();
                         } else if (args.length < 3) {
 
                             sender.sendMessage(Lang.COMPANY_CREATE_ADMIN_HELP.toString());
@@ -338,80 +322,77 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
 
                     case "삭제":
 
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
-                                if (company.hasThisPlayer(args[2])) {
-                                    if (!company.isLeader(args[2])) {
-                                        company.removeMember(args[2]);
-                                        company.removeSubLeader(args[2]);
-
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_REMOVE_MEMBER,
-                                                new String[]{"%target%", "%company%"}, args[2],
-                                                company.getName()));
-
-                                        MCUtils.sendMsgTo(args[2],
-                                                Lang.withPlaceHolder(Lang.COMPANY_FORCE_REMOVE_MEMBER_TARGET,
-                                                        "%company%", company.getName()));
-
-                                    } else {
-                                        sender.sendMessage(
-                                                Lang.withPlaceHolder(Lang.CANNOT_KICK_LEADER, "%target%", args[2]));
-                                    }
-
-                                } else {
-
-                                    sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_MEMBER_TARGET,
-                                            new String[]{"%target%", "%company%"}, args[2], company.getName()));
-                                }
-
-                            }
-
-                        } else {
+                        if (args.length != 3) {
                             sender.sendMessage(Lang.COMPANY_ADMIN_REMOVE_MEMBER_HELP.toString());
+                            return;
                         }
 
-                        break;
+                        if (!CompanyFuns.mustExistCompany(args[1], sender)) {
+                            return;
+                        }
 
-                    case "최대인원":
-                        if (args.length == 3) {
-
-                            if (MCUtils.mustBeInteger(args[2], sender)) {
-
-                                int max = MineCompanyPlugin.plugin.getConfig().getInt("maxSize_Company", 1000);
-                                int min = MineCompanyPlugin.plugin.getConfig().getInt("Company.defaultSize", 8);
-                                int maxSize = Integer.parseInt(args[2]);
-
-                                if (maxSize >= min && maxSize <= max) {
-                                    if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                        Company company = CompanyFuns.getCompanyFromName(args[1]);
-                                        if (maxSize >= company.getTeamSize()) {
-                                            company.setMaxSize(maxSize);
-
-                                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_SET_MAXSIZE,
-                                                    new String[]{"%player%", "%company%", "%size%"},
-                                                    sender.getName(), company.getName(), args[2]));
-
-                                        } else {
-                                            sender.sendMessage(
-                                                    Lang.withPlaceHolder(Lang.INVAILED_MAXSIZE_NOT_ENOUGH, "%size%",
-                                                            company.getTeamSize()));
-                                        }
-
-                                    }
-                                } else {
+                    {
+                        Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (!company.hasThisPlayer(args[2])) {
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_MEMBER_TARGET,
+                                    new String[]{"%target%", "%company%"}, args[2], company.getName()));
+                            return;
+                        }
+                        if (!company.isLeader(args[2])) {
+                            company.removeMember(args[2]);
+                            company.removeSubLeader(args[2]);
 
 
-                                    sender.sendMessage(Lang.withPlaceHolder(Lang.INVAILED_MAXSIZE,
-                                            new String[]{"%max%", "%min%"}, max, min));
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_REMOVE_MEMBER,
+                                    new String[]{"%target%", "%company%"}, args[2],
+                                    company.getName()));
 
-                                }
-
-                            }
+                            MCUtils.sendMsgTo(args[2],
+                                    Lang.withPlaceHolder(Lang.COMPANY_FORCE_REMOVE_MEMBER_TARGET,
+                                            "%company%", company.getName()));
 
                         } else {
+                            sender.sendMessage(
+                                    Lang.withPlaceHolder(Lang.CANNOT_KICK_LEADER, "%target%", args[2]));
+                        }
+                    } //need this bracket to limit scope for company
+                    break;
+
+                    case "최대인원":
+                        if (args.length != 3) {
                             sender.sendMessage(Lang.COMPANY_ADMIN_MAXSIZE_HELP.toString());
+                            return;
+                        }
+
+                        if (!MCUtils.mustBeInteger(args[2], sender)) {
+                            return;
+                        }
+
+                        int max = MineCompanyPlugin.plugin.getConfig().getInt("maxSize_Company", 1000);
+                        int min = MineCompanyPlugin.plugin.getConfig().getInt("Company.defaultSize", 8);
+                        int maxSize = Integer.parseInt(args[2]);
+
+                        if (!(maxSize >= min && maxSize <= max)) {
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.INVAILED_MAXSIZE,
+                                    new String[]{"%max%", "%min%"}, max, min));
+                            return;
+                        }
+
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+                            if (maxSize >= company.getTeamSize()) {
+                                company.setMaxSize(maxSize);
+
+                                MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_FORCE_SET_MAXSIZE,
+                                        new String[]{"%player%", "%company%", "%size%"},
+                                        sender.getName(), company.getName(), args[2]));
+
+                            } else {
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.INVAILED_MAXSIZE_NOT_ENOUGH, "%size%",
+                                                company.getTeamSize()));
+                            }
+
                         }
 
                         break;
@@ -430,250 +411,244 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
                         break;
 
                     case "가치금설정":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
-                                if (MCUtils.mustBeNumber(args[2], sender)) {
-
-                                    double bal = Double.parseDouble(args[2]);
-
-                                    if (MCUtils.mustPosNum(bal, sender)) {
-
-                                        company.setCompanyValue(bal);
-
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SET_VALUE_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%value%"},
-                                                sender.getName(), company.getName(), args[2]));
-
-                                    }
-
-                                }
-
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_SET_VALUE_ADMIN_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+                            if (!MCUtils.mustBeNumber(args[2], sender)) {
+                                return;
                             }
 
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_SET_VALUE_ADMIN_HELP.toString());
+                            double bal = Double.parseDouble(args[2]);
+
+                            if (MCUtils.mustPosNum(bal, sender)) {
+                                company.setCompanyValue(bal);
+                                MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SET_VALUE_BY_ADMIN,
+                                        new String[]{"%player%", "%company%", "%value%"},
+                                        sender.getName(), company.getName(), args[2]));
+                            }
                         }
 
                         break;
 
                     case "가치금추가":
 
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_ADD_VALUE_ADMIN_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
 
-                                if (MCUtils.mustBeNumber(args[2], sender)) {
-                                    double bal = Double.parseDouble(args[2]);
-                                    if (MCUtils.mustPosNum(bal, sender)) {
-                                        company.addCompanyValue(bal);
+                            if (!MCUtils.mustBeNumber(args[2], sender)) {
+                                return;
+                            }
+                            double bal = Double.parseDouble(args[2]);
+                            if (MCUtils.mustPosNum(bal, sender)) {
+                                company.addCompanyValue(bal);
 
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_VALUE_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%amount%"},
-                                                sender.getName(), company.getName(), args[2]));
+                                MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_VALUE_BY_ADMIN,
+                                        new String[]{"%player%", "%company%", "%amount%"},
+                                        sender.getName(), company.getName(), args[2]));
 
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_VALUE,
-                                                new String[]{"%company%", "%amount%", "%value%"},
-                                                company.getName(), args[2], company.getCompanyValue()));
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_VALUE,
+                                        new String[]{"%company%", "%amount%", "%value%"},
+                                        company.getName(), args[2], company.getCompanyValue()));
 
-
-                                    }
-
-                                }
 
                             }
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_ADD_VALUE_ADMIN_HELP.toString());
                         }
+
                         break;
 
                     case "가치금차감":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
-
-                                if (MCUtils.mustBeNumber(args[2], sender)) {
-                                    double bal = Double.parseDouble(args[2]);
-                                    if (MCUtils.mustPosNum(bal, sender)) {
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_VALUE_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%amount%"},
-                                                sender.getName(), company.getName(), args[2]));
-
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_VALUE,
-                                                new String[]{"%company%", "%amount%", "%value%"},
-                                                company.getName(), args[2], company.getCompanyValue()));
-                                    }
-
-                                }
-
-                            }
-                        } else {
+                        if (args.length != 3) {
                             sender.sendMessage(Lang.COMPANY_SUBTRACT_VALUE_ADMIN_HELP.toString());
+                            return;
                         }
+
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+
+                            if (!MCUtils.mustBeNumber(args[2], sender)) {
+                                return;
+                            }
+                            double bal = Double.parseDouble(args[2]);
+                            if (MCUtils.mustPosNum(bal, sender)) {
+                                MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_VALUE_BY_ADMIN,
+                                        new String[]{"%player%", "%company%", "%amount%"},
+                                        sender.getName(), company.getName(), args[2]));
+
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_VALUE,
+                                        new String[]{"%company%", "%amount%", "%value%"},
+                                        company.getName(), args[2], company.getCompanyValue()));
+                            }
+
+                        }
+
                         break;
 
                     case "미납금추가":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_ADD_UNPAID_ADMIN_HELP.toString());
+                            return;
+                        }
 
-                                if (MCUtils.mustBeNumber(args[2], sender)) {
-                                    double bal = Double.parseDouble(args[2]);
-                                    if (MCUtils.mustPosNum(bal, sender)) {
-                                        company.addunPaidValue(bal);
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
 
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%amount%"},
-                                                sender.getName(), company.getName(), args[2]));
+                            if (!MCUtils.mustBeNumber(args[2], sender)) {
+                                return;
+                            }
+                            double bal = Double.parseDouble(args[2]);
+                            if (MCUtils.mustPosNum(bal, sender)) {
+                                company.addunPaidValue(bal);
 
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID,
-                                                new String[]{"%company%", "%amount%", "%unPaid%"},
-                                                company.getName(), args[2], company.getUnPaid()));
+                                MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_BY_ADMIN,
+                                        new String[]{"%player%", "%company%", "%amount%"},
+                                        sender.getName(), company.getName(), args[2]));
 
-                                    }
-
-                                }
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID,
+                                        new String[]{"%company%", "%amount%", "%unPaid%"},
+                                        company.getName(), args[2], company.getUnPaid()));
 
                             }
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_ADD_UNPAID_ADMIN_HELP.toString());
                         }
+
                         break;
 
                     case "미납금차감":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
-
-                                if (MCUtils.mustBeNumber(args[2], sender)) {
-                                    double bal = Double.parseDouble(args[2]);
-                                    if (MCUtils.mustPosNum(bal, sender)) {
-                                        company.subtractunPaidValue(bal);
-
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%amount%"},
-                                                sender.getName(), company.getName(), args[2]));
-
-
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID,
-                                                new String[]{"%company%", "%amount%", "%unPaid%"},
-                                                company.getName(), args[2], company.getUnPaid()));
-
-                                    }
-
-                                }
-
-                            }
-                        } else {
+                        if (args.length != 3) {
                             sender.sendMessage(Lang.COMPANY_SUBTRACT_UNPAID_ADMIN_HELP.toString());
+                            return;
                         }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+
+                            if (!MCUtils.mustBeNumber(args[2], sender)) {
+                                return;
+                            }
+                            double bal = Double.parseDouble(args[2]);
+                            if (!MCUtils.mustPosNum(bal, sender)) {
+                                return;
+                            }
+                            company.subtractunPaidValue(bal);
+
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_BY_ADMIN,
+                                    new String[]{"%player%", "%company%", "%amount%"},
+                                    sender.getName(), company.getName(), args[2]));
+
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID,
+                                    new String[]{"%company%", "%amount%", "%unPaid%"},
+                                    company.getName(), args[2], company.getUnPaid()));
+                        }
+
                         break;
                     case "미납금설정":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_SET_UNPAID_ADMIN_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
 
-                                if (MCUtils.mustBeNumber(args[2], sender)) {
-                                    double bal = Double.parseDouble(args[2]);
-                                    if (MCUtils.mustPosNum(bal, sender)) {
-                                        company.setUnPaid(bal);
-
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID,
-                                                new String[]{"%company%", "%amount%", "%unPaid%"},
-                                                company.getName(), args[2], company.getUnPaid()));
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID,
-                                                new String[]{"%player%", "%company%", "%unPaid%"},
-                                                sender.getName(), company.getName(), args[2]));
-
-
-                                    }
-
-                                }
+                            if (!MCUtils.mustBeNumber(args[2], sender)) {
+                                return;
 
                             }
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_SET_UNPAID_ADMIN_HELP.toString());
+                            double bal = Double.parseDouble(args[2]);
+                            if (!MCUtils.mustPosNum(bal, sender)) {
+                                return;
+                            }
+                            company.setUnPaid(bal);
+
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID,
+                                    new String[]{"%company%", "%amount%", "%unPaid%"},
+                                    company.getName(), args[2], company.getUnPaid()));
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID,
+                                    new String[]{"%player%", "%company%", "%unPaid%"},
+                                    sender.getName(), company.getName(), args[2]));
                         }
                         break;
 
                     case "미납횟수추가":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
-
-                                if (MCUtils.mustBeInteger(args[2], sender)) {
-                                    int times = Integer.parseInt(args[2]);
-                                    if (MCUtils.mustPosInt(times, sender)) {
-                                        company.addUnpaid_times(times);
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_TIMES_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%amount%"},
-                                                sender.getName(), company.getName(), args[2]));
-
-
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_TIMES,
-                                                new String[]{"%company%", "%amount%", "%unPaid_times%"},
-                                                company.getName(), args[2], company.getUnpaid_times_String()));
-
-                                    }
-
-                                }
-
-                            }
-                        } else {
+                        if (args.length != 3) {
                             sender.sendMessage(Lang.COMPANY_ADD_UNPAID_TIMES_ADMIN_HELP.toString());
+                            return;
+                        }
+
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+
+                            if (!MCUtils.mustBeInteger(args[2], sender)) {
+                                return;
+                            }
+                            int times = Integer.parseInt(args[2]);
+                            if (!MCUtils.mustPosInt(times, sender)) {
+                                return;
+                            }
+                            company.addUnpaid_times(times);
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_TIMES_BY_ADMIN,
+                                    new String[]{"%player%", "%company%", "%amount%"},
+                                    sender.getName(), company.getName(), args[2]));
+
+
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_UNPAID_TIMES,
+                                    new String[]{"%company%", "%amount%", "%unPaid_times%"},
+                                    company.getName(), args[2], company.getUnpaid_times_String()));
                         }
                         break;
 
                     case "미납횟수차감":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
+                        if (args.length != 3) {
+                            sender.sendMessage(Lang.COMPANY_SUBTRACT_UNPAID_TIMES_ADMIN_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
 
-                                if (MCUtils.mustBeInteger(args[2], sender)) {
-                                    int times = Integer.parseInt(args[2]);
-                                    if (MCUtils.mustPosInt(times, sender)) {
-                                        company.subtractUnpaid_times(times);
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID_TIMES_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%amount%"},
-                                                sender.getName(), company.getName(), args[2]));
-
-                                        sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID_TIMES,
-                                                new String[]{"%company%", "%amount%", "%unPaid_times%"},
-                                                company.getName(), args[2], company.getUnpaid_times_String()));
-                                    }
-
-                                }
+                            if (!MCUtils.mustBeInteger(args[2], sender)) {
+                                return;
 
                             }
-                        } else {
-                            sender.sendMessage(Lang.COMPANY_SUBTRACT_UNPAID_TIMES_ADMIN_HELP.toString());
+                            int times = Integer.parseInt(args[2]);
+                            if (!MCUtils.mustPosInt(times, sender)) {
+                                return;
+                            }
+                            company.subtractUnpaid_times(times);
+
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID_TIMES_BY_ADMIN,
+                                    new String[]{"%player%", "%company%", "%amount%"},
+                                    sender.getName(), company.getName(), args[2]));
+
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_SUBTRACT_UNPAID_TIMES,
+                                    new String[]{"%company%", "%amount%", "%unPaid_times%"},
+                                    company.getName(), args[2], company.getUnpaid_times_String()));
                         }
                         break;
 
                     case "미납횟수설정":
-                        if (args.length == 3) {
-                            if (CompanyFuns.mustExistCompany(args[1], sender)) {
-                                Company company = CompanyFuns.getCompanyFromName(args[1]);
-
-                                if (MCUtils.mustBeInteger(args[2], sender)) {
-                                    int times = Integer.parseInt(args[2]);
-                                    if (MCUtils.mustPosInt(times, sender)) {
-                                        company.setUnPaid_times(times);
-
-                                        MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SET_UNPAID_TIMES_BY_ADMIN,
-                                                new String[]{"%player%", "%company%", "%unPaid_times%"},
-                                                sender.getName(), company.getName(), args[2]));
-                                    }
-
-                                }
-
-                            }
-                        } else {
+                        if (args.length != 3) {
                             sender.sendMessage(Lang.COMPANY_SET_UNPAID_TIMES_ADMIN_HELP.toString());
+                            return;
+                        }
+                        if (CompanyFuns.mustExistCompany(args[1], sender)) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+
+                            if (!MCUtils.mustBeInteger(args[2], sender)) {
+                                return;
+                            }
+                            int times = Integer.parseInt(args[2]);
+                            if (!MCUtils.mustPosInt(times, sender)) {
+                                return;
+                            }
+                            company.setUnPaid_times(times);
+
+                            MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SET_UNPAID_TIMES_BY_ADMIN,
+                                    new String[]{"%player%", "%company%", "%unPaid_times%"},
+                                    sender.getName(), company.getName(), args[2]));
                         }
                         break;
 
@@ -700,13 +675,13 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
                                 Company company = CompanyFuns.getCompanyFromName(args[1]);
                                 String oldName = company.getName();
 
-                                if (CompanyFuns.renameCompany(company, args[2], sender)) {
-                                    Bukkit.broadcastMessage(
-                                            Lang.withPlaceHolder(Lang.COMPANY_CHNAGED_NAME_BROADCAST_ADMIN,
-                                                    new String[]{"%player%", "%oldCompany%", "%company%"},
-                                                    sender.getName(), oldName, company.getName()));
+                                if (!CompanyFuns.renameCompany(company, args[2], sender)) {
+                                    return;
                                 }
-
+                                Bukkit.broadcastMessage(
+                                        Lang.withPlaceHolder(Lang.COMPANY_CHNAGED_NAME_BROADCAST_ADMIN,
+                                                new String[]{"%player%", "%oldCompany%", "%company%"},
+                                                sender.getName(), oldName, company.getName()));
                             }
 
                         } else if (args.length < 3) {
@@ -764,12 +739,7 @@ public class CompanyManagement implements CommandExecutor, TabCompleter {
             list.add("데이터저장");
             list.add("이름변경");
             String finalArg = args[args.length - 1];
-            Iterator<String> it = list.iterator();
-            while (it.hasNext()) {
-                if (!it.next().startsWith(finalArg)) {
-                    it.remove();
-                }
-            }
+            list.removeIf(s -> !s.startsWith(finalArg));
 
             return list;
         } else {
