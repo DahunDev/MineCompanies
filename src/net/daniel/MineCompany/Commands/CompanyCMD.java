@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,762 +21,740 @@ import net.daniel.MineCompany.Utils.CompanyFuns;
 
 public class CompanyCMD implements CommandExecutor, TabCompleter {
 
-	private MineCompanyPlugin plugin = MineCompanyPlugin.plugin;
+    private final MineCompanyPlugin plugin = MineCompanyPlugin.plugin;
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if (MCUtils.mustHasPerm(sender, "MineCompany.use")) {
+        if (!MCUtils.mustHasPerm(sender, "MineCompany.use")) {
+            return true;
+        }
 
-			if (args.length >= 1) {
+        if (!(args.length >= 1)) {
+            sender.sendMessage(Lang.COMPANY_HELP.toString());
+            return true;
+        }
 
-				new BukkitRunnable() {
+        new BukkitRunnable() {
 
-					@Override
-					public void run() {
-						switch (args[0]) {
-						case "¡§∫∏":
+            @Override
+            public void run() {
+                switch (args[0]) {
+                    case "Ï†ïÎ≥¥":
 
-							if (args.length == 2) {
-								Company company = CompanyFuns.getCompanyFromName(args[1]);
-								if (company != null) {
-									sender.sendMessage(CompanyFuns.getCompanyInfo(company, Lang.COMPANY_INFO));
+                        if (args.length == 2) {
+                            Company company = CompanyFuns.getCompanyFromName(args[1]);
+                            if (company != null) {
+                                sender.sendMessage(CompanyFuns.getCompanyInfo(company, Lang.COMPANY_INFO));
 
-								} else {
+                            } else {
 
-									sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_NOT_EXIST_THAT_NAME,
-											"%company%", args[1]));
-								}
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_NOT_EXIST_THAT_NAME,
+                                        "%company%", args[1]));
+                            }
 
-							} else {
-								if (args.length == 1) {
+                        } else {
+                            if (args.length != 1) {
+                                sender.sendMessage(Lang.NO_COMPANY_NAME_SPACE.toString());
+                                return;
 
-									if (MCUtils.mustBePlayer(sender)) {
-										Player player = (Player) sender;
+                            }
 
-										if (MCUtils.mustHasCompany(player)) {
-											Company company = CompanyFuns.getCompany(player);
-											sender.sendMessage(
-													CompanyFuns.getCompanyInfo(company, Lang.COMPANY_INFO_MINE));
+                            if (!MCUtils.mustBePlayer(sender)) {
+                                return;
+                            }
 
-										}
+                            Player player = (Player) sender;
 
-									}
+                            if (MCUtils.mustHasCompany(player)) {
+                                Company company = CompanyFuns.getCompany(player);
+                                sender.sendMessage(
+                                        CompanyFuns.getCompanyInfo(company, Lang.COMPANY_INFO_MINE));
 
-								} else {
-									sender.sendMessage(Lang.NO_COMPANY_NAME_SPACE.toString());
-								}
+                            }
 
-							}
+                        }
 
-							break;
+                        break;
 
-						case "¿ß¿”":
+                    case "ÏúÑÏûÑ":
 
-							if (MCUtils.mustBePlayer(sender)) {
+                        if (MCUtils.mustBePlayer(sender)) {
 
-								if (args.length == 3) {
-									Player player = (Player) sender;
+                            if (args.length != 3) {
+                                sender.sendMessage(Lang.MANDATE_HELP.toString());
+                                return;
 
-									if (MCUtils.mustHasCompany(player)) {
+                            }
 
-										Company company = CompanyFuns.getCompany(player);
+                            Player player = (Player) sender;
 
-										if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
-											if (args[1].equalsIgnoreCase(company.getName())) {
-												if (MCUtils.mustBeOnline(args[2], sender)) {
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
 
-													Player target = Bukkit.getPlayerExact(args[2]);
-													CompanyFuns.mandateConfirmAutoExpire(player, target);
+                            Company company = CompanyFuns.getCompany(player);
 
-												}
+                            if (!MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                return;
+                            }
+                            if (!(args[1].equalsIgnoreCase(company.getName()))) {
+                                sender.sendMessage(Lang.NOT_MATCH_THE_COMPANY_NAME.toString());
+                                return;
 
-											} else {
-												sender.sendMessage(Lang.NOT_MATCH_THE_COMPANY_NAME.toString());
-											}
+                            }
+                            if (MCUtils.mustBeOnline(args[2], sender)) {
 
-										}
+                                Player target = Bukkit.getPlayerExact(args[2]);
+                                CompanyFuns.mandateConfirmAutoExpire(player, target);
 
-									}
+                            }
 
-								} else {
-									sender.sendMessage(Lang.MANDATE_HELP.toString());
-								}
 
-							}
+                        }
 
-							break;
+                        break;
 
-						case "¿ß¿”ºˆ∂Ù":
+                    case "ÏúÑÏûÑÏàòÎùΩ":
 
-							if (MCUtils.mustBePlayer(sender)) {
+                        if (MCUtils.mustBePlayer(sender)) {
 
-								if (args.length == 3) {
-									Player player = (Player) sender;
+                            if (args.length != 3) {
+                                sender.sendMessage(Lang.MANDATE_ACCEPT_HELP.toString());
+                                return;
+                            }
+                            Player player = (Player) sender;
 
-									if (MCUtils.mustHasCompany(player)) {
+                            if (MCUtils.mustHasCompany(player)) {
 
-										Company company = CompanyFuns.getCompany(player);
+                                Company company = CompanyFuns.getCompany(player);
 
-										if (args[1].equalsIgnoreCase(company.getName())) {
-											if (args[2].equalsIgnoreCase(player.getName())) {
+                                if (!(args[1].equalsIgnoreCase(company.getName()))) {
+                                    sender.sendMessage(Lang.NOT_MATCH_THE_COMPANY_NAME.toString());
+                                    return;
+                                }
 
-												CompanyFuns.acceptMandate(player);
+                                if (args[2].equalsIgnoreCase(player.getName())) {
+                                    CompanyFuns.acceptMandate(player);
+                                } else {
+                                    sender.sendMessage(Lang.NOT_MATCH_THE_PLAYER_NAME.toString());
 
-											} else {
-												sender.sendMessage(Lang.NOT_MATCH_THE_PLAYER_NAME.toString());
+                                }
 
-											}
+                            }
 
-										} else {
-											sender.sendMessage(Lang.NOT_MATCH_THE_COMPANY_NAME.toString());
-										}
+                        }
 
-									}
+                        break;
+                    case "ÏúÑÏûÑÍ±∞Ï†à":
 
-								} else {
-									sender.sendMessage(Lang.MANDATE_ACCEPT_HELP.toString());
-								}
+                        if (MCUtils.mustBePlayer(sender)) {
 
-							}
+                            if (args.length != 3) {
+                                sender.sendMessage(Lang.MANDATE_DENY_HELP.toString());
+                                return;
+                            }
 
-							break;
-						case "¿ß¿”∞≈¿˝":
+                            Player player = (Player) sender;
 
-							if (MCUtils.mustBePlayer(sender)) {
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
 
-								if (args.length == 3) {
-									Player player = (Player) sender;
+                            }
 
-									if (MCUtils.mustHasCompany(player)) {
+                            Company company = CompanyFuns.getCompany(player);
 
-										Company company = CompanyFuns.getCompany(player);
+                            if (!(args[1].equalsIgnoreCase(company.getName()))) {
+                                sender.sendMessage(Lang.NOT_MATCH_THE_COMPANY_NAME.toString());
+                                return;
+                            }
 
-										if (args[1].equalsIgnoreCase(company.getName())) {
-											if (args[2].equalsIgnoreCase(player.getName())) {
+                            if (args[2].equalsIgnoreCase(player.getName())) {
 
-												CompanyFuns.denyMandate(player);
+                                CompanyFuns.denyMandate(player);
 
-											} else {
-												sender.sendMessage(Lang.NOT_MATCH_THE_PLAYER_NAME.toString());
+                            } else {
+                                sender.sendMessage(Lang.NOT_MATCH_THE_PLAYER_NAME.toString());
 
-											}
+                            }
 
-										} else {
-											sender.sendMessage(Lang.NOT_MATCH_THE_COMPANY_NAME.toString());
-										}
 
-									}
+                        }
 
-								} else {
-									sender.sendMessage(Lang.MANDATE_DENY_HELP.toString());
-								}
+                        break;
+                    case "ÏàòÎùΩ":
 
-							}
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
+                            CompanyFuns.acceptInvite(player);
+                        }
 
-							break;
-						case "ºˆ∂Ù":
+                        break;
+                    case "Í±∞Ï†à":
 
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
+                            CompanyFuns.denyInvite(player);
+                        }
 
-								CompanyFuns.acceptInvite(player);
+                        break;
+                    case "Ï¥àÎåÄ":
+                        if (args.length != 2) {
+                            sender.sendMessage(Lang.INVITE_HELP.toString());
+                            return;
 
-							}
+                        }
 
-							break;
-						case "∞≈¿˝":
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
 
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
+                            CompanyFuns.inviteAutoExpire(player.getName(), args[1], player);
 
-								CompanyFuns.denyInvite(player);
+                        }
+                        break;
+                    case "Ï∂îÎ∞©":
 
-							}
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
 
-							break;
-						case "√ ¥Î":
-							if (args.length == 2) {
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
+                            Company company = CompanyFuns.getCompany(player);
 
-								if (MCUtils.mustBePlayer(sender)) {
-									Player player = (Player) sender;
+                            if (!MCUtils.mustHasPermforKick(player)) {
+                                return;
+                            }
 
-									if (MCUtils.mustHasCompany(player)) {
 
-										CompanyFuns.inviteAutoExpire(player.getName(), args[1], player);
+                            if (args.length != 2) {
+                                sender.sendMessage(Lang.KICK_HELP.toString());
+                                return;
 
-									}
+                            }
 
-								}
+                            if (args[1].equalsIgnoreCase(player.getName()) || company.isLeader(args[1])
+                                    || company.isSubLeader(args[1])) {
 
-							} else {
+                                sender.sendMessage(Lang.CANNOT_KICK_ME_LEADER_SUBLEDAERS.toString());
 
-								sender.sendMessage(Lang.INVITE_HELP.toString());
+                                break;
+                            }
 
-							}
+                            if (company.isMember(args[1])) {
 
-							break;
-						case "√ﬂπÊ":
+                                company.removeMember(args[1]);
 
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.KICKED_PLAYER, "%target%", args[1]));
 
-								if (MCUtils.mustHasCompany(player)) {
-									Company company = CompanyFuns.getCompany(player);
+                                MCUtils.sendMsgTo(args[1], Lang.withPlaceHolder(
+                                        Lang.KICKED_FROM_COMPANY, "%company%", company.getName()));
 
-									if (MCUtils.mustHasPermforKick(player)) {
+                            } else {
 
-										if (args.length == 2) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_SAME_COMPANY_MEMBER,
+                                        "%company%", company.getName()));
+                            }
 
-											if (args[1].equalsIgnoreCase(player.getName()) || company.isLeader(args[1])
-													|| company.isSubLeader(args[1])) {
+                        }
 
-												sender.sendMessage(Lang.CANNOT_KICK_ME_LEADER_SUBLEDAERS.toString());
+                        break;
+                    case "ÏÇ¨Ïõê":
 
-												break;
-											}
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
 
-											if (company.isMember(args[1])) {
+                            Company company = CompanyFuns.getCompany(player);
 
-												company.removeMember(args[1]);
+                            if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
 
-												sender.sendMessage(
-														Lang.withPlaceHolder(Lang.KICKED_PLAYER, "%target%", args[1]));
+                                if (args.length != 2) {
+                                    sender.sendMessage(Lang.COMPANY_SET_SUBLEADER_HELP.toString());
+                                    return;
+                                }
 
-												MCUtils.sendMsgTo(args[1], Lang.withPlaceHolder(
-														Lang.KICKED_FROM_COMPANY, "%company%", company.getName()));
 
-											} else {
+                                if (company.isLeader(args[1])) {
+                                    sender.sendMessage(Lang.CANNOT_SET_LEADER_TO_MEMBER.toString());
+                                    break;
+                                }
 
-												sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_SAME_COMPANY_MEMBER,
-														"%company%", company.getName()));
-											}
+                                if (!company.hasThisPlayer(args[1])) {
 
-										} else {
-											sender.sendMessage(Lang.KICK_HELP.toString());
-										}
+                                    sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_SAME_COMPANY_MEMBER,
+                                            "%target%", args[1]));
+                                    return;
 
-									}
+                                }
 
-								}
+                                if (company.changeToMember(args[1])) {
 
-							}
+                                    MCUtils.sendMsgTo(args[1], Lang.withPlaceHolder(Lang.NOW_MEMBER_ME,
+                                            "%company%", company.getName()));
 
-							break;
-						case "ªÁø¯":
+                                    sender.sendMessage(Lang.withPlaceHolder(Lang.NOW_MEMBER_TARGET,
+                                            new String[]{"%company%", "%target%"}, company.getName(),
+                                            args[1]));
 
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
-								if (MCUtils.mustHasCompany(player)) {
+                                } else {
 
-									Company company = CompanyFuns.getCompany(player);
+                                    sender.sendMessage(Lang.withPlaceHolder(Lang.FAILED_SET_MEMBER,
+                                            new String[]{"%company%", "%target%"}, company.getName(),
+                                            args[1]));
+                                }
+                            }
+                        }
 
-									if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                        break;
+                    case "Î∂ÄÌöåÏû•":
 
-										if (args.length == 2) {
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
 
-											if (company.isLeader(args[1])) {
-												sender.sendMessage(Lang.CANNOT_SET_LEADER_TO_MEMBER.toString());
-												break;
-											}
+                            Company company = CompanyFuns.getCompany(player);
 
-											if (company.hasThisPlayer(args[1])) {
+                            if (!MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                return;
 
-												if (company.changeToMember(args[1])) {
+                            }
 
-													MCUtils.sendMsgTo(args[1], Lang.withPlaceHolder(Lang.NOW_MEMBER_ME,
-															"%company%", company.getName()));
+                            if (args.length != 2) {
+                                sender.sendMessage(Lang.COMPANY_SET_SUBLEADER_HELP.toString());
+                                return;
+                            }
 
-													sender.sendMessage(Lang.withPlaceHolder(Lang.NOW_MEMBER_TARGET,
-															new String[] { "%company%", "%target%" }, company.getName(),
-															args[1]));
 
-												} else {
+                            if (args[1].equalsIgnoreCase(player.getName())) {
+                                sender.sendMessage(Lang.CANNOT_CHANGE_RANK_MINE.toString());
+                                break;
+                            }
 
-													sender.sendMessage(Lang.withPlaceHolder(Lang.FAILED_SET_MEMBER,
-															new String[] { "%company%", "%target%" }, company.getName(),
-															args[1]));
-												}
+                            if (!company.hasThisPlayer(args[1])) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_SAME_COMPANY_MEMBER,
+                                        "%target%", args[1]));
+                                return;
+                            }
 
-											} else {
+                            if (company.changeToSubLeader(args[1])) {
 
-												sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_SAME_COMPANY_MEMBER,
-														"%target%", args[1]));
-											}
+                                MCUtils.sendMsgTo(args[1], Lang.withPlaceHolder(
+                                        Lang.NOW_SUBLEADER_ME, "%company%", company.getName()));
 
-										} else {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.NOW_SUBLEADER_TARGET,
+                                        new String[]{"%company%", "%target%"}, company.getName(),
+                                        args[1]));
 
-											sender.sendMessage(Lang.COMPANY_SET_SUBLEADER_HELP.toString());
+                            } else {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.FAILED_SET_SUBLEADER,
+                                        new String[]{"%company%", "%target%"}, company.getName(),
+                                        args[1]));
+                            }
+                        }
 
-										}
+                        break;
+                    case "Ï∞ΩÏóÖ":
 
-									}
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
 
-								}
+                            if (args.length == 2) {
 
-							}
+                                if (!MCUtils.mustVaildName(args[1], sender)) {
+                                    return;
+                                }
+                                if (!MCUtils.mustHasNoCompany(player.getName(), player)) {
+                                    return;
+                                }
 
-							break;
-						case "∫Œ»∏¿Â":
+                                if (!CompanyFuns.mustNonExistCompany(args[1], sender)) {
+                                    return;
+                                }
+                                if (!MCUtils.mustHasMoney(player, MineCompanyPlugin.startup_min_money,
+                                        sender)) {
+                                    return;
+                                }
 
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
-								if (MCUtils.mustHasCompany(player)) {
+                                double price = MineCompanyPlugin.startup_Cost;
+                                MineCompanyPlugin.Eco.withdrawPlayer(player, price);
 
-									Company company = CompanyFuns.getCompany(player);
+                                if (CompanyFuns.createCompany(args[1], player.getName())) {
 
-									if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                    sender.sendMessage(Lang.withPlaceHolder(Lang.PAID_MONEY,
+                                            "%price%", price));
 
-										if (args.length == 2) {
+                                    MCUtils.broadcast(Lang.withPlaceHolder(Lang.CREATED_COMPANY,
+                                            new String[]{"%company%", "%player%"}, args[1],
+                                            player.getName()));
 
-											if (args[1].equalsIgnoreCase(player.getName())) {
-												sender.sendMessage(Lang.CANNOT_CHANGE_RANK_MINE.toString());
-												break;
-											}
+                                    MineCompanyPlugin.calcCompanyList();
 
-											if (company.hasThisPlayer(args[1])) {
+                                } else {
+                                    MineCompanyPlugin.Eco.depositPlayer(player, price);
 
-												if (company.changeToSubLeader(args[1])) {
+                                    sender.sendMessage(Lang.withPlaceHolder(Lang.REFUND_MONEY,
+                                            "%price%", price));
 
-													MCUtils.sendMsgTo(args[1], Lang.withPlaceHolder(
-															Lang.NOW_SUBLEADER_ME, "%company%", company.getName()));
+                                    sender.sendMessage(Lang.withPlaceHolder(
+                                            Lang.FAILED_CREATE_COMPANY, "%company%", args[1]));
 
-													sender.sendMessage(Lang.withPlaceHolder(Lang.NOW_SUBLEADER_TARGET,
-															new String[] { "%company%", "%target%" }, company.getName(),
-															args[1]));
+                                }
 
-												} else {
-													sender.sendMessage(Lang.withPlaceHolder(Lang.FAILED_SET_SUBLEADER,
-															new String[] { "%company%", "%target%" }, company.getName(),
-															args[1]));
-												}
 
-											} else {
+                            } else if (args.length < 2) {
 
-												sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_SAME_COMPANY_MEMBER,
-														"%target%", args[1]));
-											}
+                                sender.sendMessage(Lang.CREATE_COMPANY_HELP.toString());
 
-										} else {
+                            } else {
+                                sender.sendMessage(Lang.NO_COMPANY_NAME_SPACE.toString());
+                            }
 
-											sender.sendMessage(Lang.COMPANY_SET_SUBLEADER_HELP.toString());
+                        }
+                        break;
+                    case "ÌÉàÌá¥":
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
 
-										}
+                            if (MCUtils.mustHasCompany(player)) {
 
-									}
+                                Company company = CompanyFuns.getCompany(player);
 
-								}
+                                if (company.isLeader(player.getName())) {
+                                    sender.sendMessage(Lang.CANNOT_LEAVE_COMPANY_LEADER.toString());
+                                    return;
+                                }
 
-							}
+                                company.removeMember(player.getName());
+                                company.removeSubLeader(player.getName());
 
-							break;
-						case "√¢æ˜":
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.LEAVE_COMPANY, "%company%",
+                                        company.getName()));
+                            }
 
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
+                        }
 
-								if (args.length == 2) {
+                        break;
 
-									if (MCUtils.mustVaildName(args[1], sender)) {
-										if (MCUtils.mustHasNoCompany(player.getName(), player)) {
+                    case "Ïù¥Î¶ÑÎ≥ÄÍ≤Ω":
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
 
-											if (CompanyFuns.mustNonExistCompany(args[1], sender)) {
+                            if (args.length == 2) {
+                                if (!MCUtils.mustHasCompany(player)) {
+                                    return;
+                                }
 
-												if (MCUtils.mustHasMoney(player, MineCompanyPlugin.startup_min_money,
-														sender)) {
-													double price = MineCompanyPlugin.startup_Cost;
-													MineCompanyPlugin.Eco.withdrawPlayer(player, price);
+                                Company company = CompanyFuns.getCompany(player);
+                                String oldName = company.getName();
 
-													if (CompanyFuns.createCompany(args[1], player.getName())) {
+                                if (!MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                    return;
+                                }
+                                if (!MCUtils.mustHasMoney(player, MineCompanyPlugin.rename_cost, sender)) {
+                                    return;
+                                }
+                                if (CompanyFuns.renameCompany(company, args[1], sender)) {
+                                    MineCompanyPlugin.Eco.withdrawPlayer(player,
+                                            MineCompanyPlugin.rename_cost);
+                                    sender.sendMessage(Lang.withPlaceHolder(Lang.PAID_MONEY, "%price%",
+                                            MineCompanyPlugin.rename_cost));
+                                    Bukkit.broadcastMessage(Lang.withPlaceHolder(
+                                            Lang.COMPANY_CHNAGED_NAME_BROADCAST,
+                                            new String[]{"%player%", "%oldCompany%", "%company%"},
+                                            player.getName(), oldName, company.getName()));
+                                }
 
-														sender.sendMessage(Lang.withPlaceHolder(Lang.PAID_MONEY,
-																"%price%", price));
+                            } else if (args.length < 2) {
+                                sender.sendMessage(Lang.COMPANY_CHNAGE_NAME_HELP.toString());
 
-														MCUtils.broadcast(Lang.withPlaceHolder(Lang.CREATED_COMPANY,
-																new String[] { "%company%", "%player%" }, args[1],
-																player.getName()));
+                            } else {
+                                sender.sendMessage(Lang.NO_COMPANY_NAME_SPACE.toString());
+                            }
 
-														MineCompanyPlugin.calcCompanyList();
+                        }
 
-													} else {
-														MineCompanyPlugin.Eco.depositPlayer(player, price);
+                        break;
 
-														sender.sendMessage(Lang.withPlaceHolder(Lang.REFUND_MONEY,
-																"%price%", price));
+                    case "Í∞ÄÏπòÏûÖÍ∏à":
 
-														sender.sendMessage(Lang.withPlaceHolder(
-																Lang.FAILED_CREATE_COMPANY, "%company%", args[1]));
+                        if (args.length != 2) {
+                            sender.sendMessage(Lang.COMPANY_ADD_VALUE_HELP.toString());
+                            return;
+                        }
 
-													}
+                        if (MCUtils.mustBeNumber(args[1], sender)) {
+                            double input = Double.parseDouble(args[1]);
+                            if (!MCUtils.mustPosNum(input, sender)) {
+                                return;
+                            }
+                            if (!MCUtils.mustBePlayer(sender)) {
+                                return;
 
-												}
+                            }
+                            Player player = (Player) sender;
 
-											}
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
 
-										}
-									}
+                            }
 
-								} else if (args.length < 2) {
+                            Company company = CompanyFuns.getCompany(player);
 
-									sender.sendMessage(Lang.CREATE_COMPANY_HELP.toString());
+                            if (MCUtils.mustHasMoney(player, input, sender)) {
+                                company.addCompanyValue(input);
+                                MineCompanyPlugin.Eco.withdrawPlayer(player, input);
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.PAID_MONEY, "%price%", input));
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_VALUE,
+                                        new String[]{"%company%", "%amount%", "%value%"},
+                                        company.getName(), input, company.getCompanyValue()));
 
-								} else {
-									sender.sendMessage(Lang.NO_COMPANY_NAME_SPACE.toString());
-								}
+                            }
+                        }
 
-							}
-							break;
-						case "≈ª≈":
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
+                        break;
 
-								if (MCUtils.mustHasCompany(player)) {
+                    case "Ìï¥Ï≤¥":
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
+                            Company company = CompanyFuns.getCompany(player);
 
-									Company company = CompanyFuns.getCompany(player);
+                            if (!MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                return;
 
-									if (!company.isLeader(player.getName())) {
+                            }
 
-										company.removeMember(player.getName());
-										company.removeSubLeader(player.getName());
+                            if (!(args.length >= 2)) {
+                                CompanyFuns.deleteConfirmAutoExpire(player);
+                                return;
+                            }
 
-										sender.sendMessage(Lang.withPlaceHolder(Lang.LEAVE_COMPANY, "%company%",
-												company.getName()));
+                            if (args[1].equals("ÌôïÏù∏")) {
+                                CompanyFuns.confirmDelete(player);
+                            } else {
+                                sender.sendMessage(Lang.DELETE_COMPANY_CMD_HELP.toString());
+                            }
+                        }
 
-									} else {
-										sender.sendMessage(Lang.CANNOT_LEAVE_COMPANY_LEADER.toString());
-									}
+                        break;
+                    case "Î™©Î°ù": {
+                        int size = MineCompanyPlugin.sortedCompanyList.size();
+                        int perPage = MineCompanyPlugin.plugin.getConfig().getInt("companies-per-page", 15);
+                        int maxPage = size / perPage;
+                        if (maxPage * perPage < size) {
+                            maxPage++;
+                        }
+                        String maxPageString = String.valueOf(maxPage);
+                        if (maxPage < 1) {
+                            maxPageString = "1";
+                        }
 
-								}
+                        if (args.length == 2) {
 
-							}
+                            if (!MCUtils.mustBeInteger(args[1], sender)) {
+                                return;
+                            }
 
-							break;
+                            int page = Integer.parseInt(args[1]);
+                            SimpleDateFormat format = new SimpleDateFormat(
+                                    Lang.TIME_FORMAT_FOR_LIST.toString());
+                            String time = format.format(MineCompanyPlugin.getLastsortedTime());
+                            if (page == 1 && size == 0) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
+                                        time, Lang.EMPTY_LIST, 1, maxPageString));
 
-						case "¿Ã∏ß∫Ø∞Ê":
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
+                                break;
+                            } else if (page > 0 && page <= maxPage) {
 
-								if (args.length == 2) {
-									if (MCUtils.mustHasCompany(player)) {
+                                String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"},
+                                        time, MCUtils.getCompanyListString(page, maxPage, perPage,
+                                                Lang.COMPANY_LIST_LINE),
+                                        page, maxPageString);
 
-										Company company = CompanyFuns.getCompany(player);
-										String oldName = company.getName();
+                                sender.sendMessage(list);
+                            } else {
 
-										if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
-											if (MCUtils.mustHasMoney(player, MineCompanyPlugin.rename_cost, sender)) {
-												if (CompanyFuns.renameCompany(company, args[1], sender)) {
-													MineCompanyPlugin.Eco.withdrawPlayer(player,
-															MineCompanyPlugin.rename_cost);
-													sender.sendMessage(Lang.withPlaceHolder(Lang.PAID_MONEY, "%price%",
-															MineCompanyPlugin.rename_cost));
-													Bukkit.broadcastMessage(Lang.withPlaceHolder(
-															Lang.COMPANY_CHNAGED_NAME_BROADCAST,
-															new String[] { "%player%", "%oldCompany%", "%company%" },
-															player.getName(), oldName, company.getName()));
-												}
-											}
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.INVAILED_PAGE, "%max%", maxPageString));
+                            }
+                        } else if (args.length == 1) {
+                            SimpleDateFormat format = new SimpleDateFormat(Lang.TIME_FORMAT_FOR_LIST.toString());
+                            String time = format.format(MineCompanyPlugin.getLastsortedTime());
+                            if (size <= 0) {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                        new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
+                                        Lang.EMPTY_LIST, 1, maxPageString));
+                                return;
+                            }
+                            String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
+                                    new String[]{"%time%", "%company_list%", "%page%", "%maxPage%"}, time,
+                                    MCUtils.getCompanyListString(1, maxPage, perPage, Lang.COMPANY_LIST_LINE),
+                                    1, maxPageString);
 
-										}
+                            sender.sendMessage(list);
 
-									}
-								} else if (args.length < 2) {
-									sender.sendMessage(Lang.COMPANY_CHNAGE_NAME_HELP.toString());
+                        } else {
+                            sender.sendMessage(Lang.COMPANY_LIST_ADMIN_HELP.toString());
+                        }
 
-								} else {
-									sender.sendMessage(Lang.NO_COMPANY_NAME_SPACE.toString());
-								}
+                    }
+                    break;
 
-							}
+                    case "Ïú†ÏßÄÎπÑÍ≥ÑÏÇ∞":
+                        if (args.length != 2) {
+                            sender.sendMessage(Lang.CALC_MAINTAIN_FEE_HELP.toString());
+                            return;
+                        }
 
-							break;
+                        if (!MCUtils.isInteger(args[1])) {
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_INTEGER, "%value%", args[1]));
+                            return;
+                        }
+                        int max = MineCompanyPlugin.plugin.getConfig().getInt("maxSize_Company", 1000);
+                        int min = MineCompanyPlugin.plugin.getConfig().getInt("Company.defaultSize", 8);
+                        int size = Integer.parseInt(args[1]);
+                        if (size >= min && size <= max) {
+                            double price = CompanyFuns.calcKeepPrice(size);
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.MAINTAIN_FEE_INFO,
+                                    new String[]{"%size%", "%price%", "%interval%", "%max_unPaid%"},
+                                    size, price, MineCompanyPlugin.keepTimeString,
+                                    CompanyFuns.calcAllowedUnpaid(size)));
 
-						case "∞°ƒ°¿‘±›":
+                        } else {
 
-							if (args.length == 2) {
+                            sender.sendMessage(Lang.withPlaceHolder(Lang.INVAILED_MAXSIZE,
+                                    new String[]{"%max%", "%min%"}, max, min));
+                        }
 
-								if (MCUtils.mustBeNumber(args[1], sender)) {
-									double input = Double.parseDouble(args[1]);
-									if (MCUtils.mustPosNum(input, sender)) {
-										if (MCUtils.mustBePlayer(sender)) {
-											Player player = (Player) sender;
+                        break;
 
-											if (MCUtils.mustHasCompany(player)) {
+                    case "Ï°∞Ìöå":
+                        if (args.length == 2) {
+                            Company company = CompanyFuns.getCompany(args[1]);
+                            if (company != null) {
 
-												Company company = CompanyFuns.getCompany(player);
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.PLAYER_LOOKUP_COMPANY,
+                                        new String[]{"%target%", "%company%"}, args[1], company.getName()));
+                            } else {
 
-												if (MCUtils.mustHasMoney(player, input, sender)) {
-													company.addCompanyValue(input);
-													MineCompanyPlugin.Eco.withdrawPlayer(player, input);
-													sender.sendMessage(
-															Lang.withPlaceHolder(Lang.PAID_MONEY, "%price%", input));
-													sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_ADD_VALUE,
-															new String[] { "%company%", "%amount%", "%value%" },
-															company.getName(), input, company.getCompanyValue()));
+                                sender.sendMessage(
+                                        Lang.withPlaceHolder(Lang.PLAYER_HAS_NO_COMPANY, "%target%", args[1]));
+                            }
 
-												}
+                        } else {
+                            sender.sendMessage(Lang.LOOKUP_PLAYER_COMPANY_HELP.toString());
+                        }
 
-											}
+                        break;
+                    case "Ï∂îÍ∞Ä":
+                        if (MCUtils.mustBePlayer(sender)) {
+                            Player player = (Player) sender;
+                            if (!MCUtils.mustHasCompany(player)) {
+                                return;
+                            }
+                            Company company = CompanyFuns.getCompany(player);
 
-										}
-									}
+                            if (!MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                return;
+                            }
 
-								}
 
-							} else {
-								sender.sendMessage(Lang.COMPANY_ADD_VALUE_HELP.toString());
-							}
+                            int maxSize = MineCompanyPlugin.plugin.getConfig().getInt("maxSize_Company",
+                                    1000);
 
-							break;
+                            if (company.getMaxSize() < maxSize) {
 
-						case "«ÿ√º":
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
-								if (MCUtils.mustHasCompany(player)) {
+                                double price = CompanyFuns.calcAddMaxPrice(company.getMaxSize());
 
-									Company company = CompanyFuns.getCompany(player);
+                                if (price == Double.NaN) {
+                                    sender.sendMessage(Lang.ERROR_CALC_PRICE.toString());
+                                    return;
+                                }
 
-									if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
+                                if (MCUtils.mustHasMoney(player, price, sender)) {
+                                    MineCompanyPlugin.Eco.withdrawPlayer(player, price);
 
-										if (args.length >= 2) {
-											if (args[1].equals("»Æ¿Œ")) {
-												CompanyFuns.confirmDelete(player);
-											} else {
-												sender.sendMessage(Lang.DELETE_COMPANY_CMD_HELP.toString());
+                                    sender.sendMessage(
+                                            Lang.withPlaceHolder(Lang.PAID_MONEY, "%price%", price));
+                                    company.addMaxSize();
 
-											}
+                                    MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SET_MAXSIZE,
+                                            new String[]{"%company%", "%size%"}, company.getName(),
+                                            company.getMaxSize()));
+                                }
+                            } else {
 
-										} else {
+                                sender.sendMessage(Lang.withPlaceHolder(Lang.CANNOT_ADD_MAXSIZE_LIMIT,
+                                        "%max%", maxSize));
+                            }
+                        }
 
-											CompanyFuns.deleteConfirmAutoExpire(player);
+                        break;
 
-										}
+                    default:
+                        sender.sendMessage(Lang.COMPANY_HELP.toString());
 
-									}
+                        break;
+                }
+            }
 
-								}
+        }.runTaskAsynchronously(plugin);
+        return true;
+    }
 
-							}
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+        List<String> list = new ArrayList<>();
 
-							break;
-						case "∏Ò∑œ": {
-							int size = MineCompanyPlugin.sortedCompanyList.size();
-							int perPage = MineCompanyPlugin.plugin.getConfig().getInt("companies-per-page", 15);
-							int maxPage = size / perPage;
-							if (maxPage * perPage < size) {
-								maxPage++;
-							}
-							String maxPageString = String.valueOf(maxPage);
-							if (maxPage < 1) {
-								maxPageString = "1";
-							}
+        if (args.length < 2) {
 
-							if (args.length == 2) {
+            list.add("Ï†ïÎ≥¥");
+            list.add("ÏúÑÏûÑ");
+            list.add("ÏúÑÏûÑÏàòÎùΩ");
+            list.add("ÏúÑÏûÑÍ±∞Ï†à");
+            list.add("ÏàòÎùΩ");
+            list.add("Í±∞Ï†à");
+            list.add("Ï¥àÎåÄ");
+            list.add("Ï∂îÎ∞©");
+            list.add("ÏÇ¨Ïõê");
+            list.add("Î∂ÄÌöåÏû•");
+            list.add("Ï∞ΩÏóÖ");
+            list.add("ÌÉàÌá¥");
+            list.add("Ìï¥Ï≤¥");
+            list.add("Î™©Î°ù");
+            list.add("Ï°∞Ìöå");
+            list.add("Ï∂îÍ∞Ä");
+            list.add("Ïú†ÏßÄÎπÑÍ≥ÑÏÇ∞");
+            list.add("Ïù¥Î¶ÑÎ≥ÄÍ≤Ω");
 
-								if (MCUtils.mustBeInteger(args[1], sender)) {
-									int page = Integer.parseInt(args[1]);
-									SimpleDateFormat format = new SimpleDateFormat(
-											Lang.TIME_FORMAT_FOR_LIST.toString());
-									String time = format.format(MineCompanyPlugin.getLastsortedTime());
-									if (page == 1 && size == 0) {
-										sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
-												new String[] { "%time%", "%company_list%", "%page%", "%maxPage%" },
-												time, Lang.EMPTY_LIST, 1, maxPageString));
+            String finalArg = args[args.length - 1];
+            Iterator<String> it = list.iterator();
+            while (it.hasNext()) {
+                if (!it.next().startsWith(finalArg)) {
+                    it.remove();
+                }
+            }
 
-										break;
-									} else if (page > 0 && page <= maxPage) {
+            return list;
+        } else {
+            return null; // Default completion
 
-										String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
-												new String[] { "%time%", "%company_list%", "%page%", "%maxPage%" },
-												time, MCUtils.getCompanyListString(page, maxPage, perPage,
-														Lang.COMPANY_LIST_LINE),
-												page, maxPageString);
+        }
 
-										sender.sendMessage(list);
-
-									} else {
-
-										sender.sendMessage(
-												Lang.withPlaceHolder(Lang.INVAILED_PAGE, "%max%", maxPageString));
-									}
-
-								}
-
-							} else if (args.length == 1) {
-								SimpleDateFormat format = new SimpleDateFormat(Lang.TIME_FORMAT_FOR_LIST.toString());
-								String time = format.format(MineCompanyPlugin.getLastsortedTime());
-								if (size > 0) {
-
-									String list = Lang.withPlaceHolder(Lang.COMPANY_LIST,
-											new String[] { "%time%", "%company_list%", "%page%", "%maxPage%" }, time,
-											MCUtils.getCompanyListString(1, maxPage, perPage, Lang.COMPANY_LIST_LINE),
-											1, maxPageString);
-
-									sender.sendMessage(list);
-
-								} else {
-									sender.sendMessage(Lang.withPlaceHolder(Lang.COMPANY_LIST,
-											new String[] { "%time%", "%company_list%", "%page%", "%maxPage%" }, time,
-											Lang.EMPTY_LIST, 1, maxPageString));
-								}
-
-							} else {
-								sender.sendMessage(Lang.COMPANY_LIST_ADMIN_HELP.toString());
-							}
-
-						}
-
-							break;
-						case "¿Ø¡ˆ∫Ò∞ËªÍ":
-							if (args.length == 2) {
-								if (MCUtils.isInteger(args[1])) {
-									int max = MineCompanyPlugin.plugin.getConfig().getInt("maxSize_Company", 1000);
-									int min = MineCompanyPlugin.plugin.getConfig().getInt("Company.defaultSize", 8);
-									int size = Integer.parseInt(args[1]);
-									if (size >= min && size <= max) {
-										double price = CompanyFuns.calcKeepPrice(size);
-										sender.sendMessage(Lang.withPlaceHolder(Lang.MAINTAIN_FEE_INFO,
-												new String[] { "%size%", "%price%", "%interval%", "%max_unPaid%" },
-												size, price, MineCompanyPlugin.keepTimeString,
-												CompanyFuns.calcAllowedUnpaid(size)));
-
-									} else {
-
-										sender.sendMessage(Lang.withPlaceHolder(Lang.INVAILED_MAXSIZE,
-												new String[] { "%max%", "%min%" }, max, min));
-									}
-
-								} else {
-									sender.sendMessage(Lang.withPlaceHolder(Lang.NOT_INTEGER, "%value%", args[1]));
-
-								}
-
-							} else {
-								sender.sendMessage(Lang.CALC_MAINTAIN_FEE_HELP.toString());
-							}
-
-							break;
-
-						case "¡∂»∏":
-							if (args.length == 2) {
-								Company company = CompanyFuns.getCompany(args[1]);
-								if (company != null) {
-
-									sender.sendMessage(Lang.withPlaceHolder(Lang.PLAYER_LOOKUP_COMPANY,
-											new String[] { "%target%", "%company%" }, args[1], company.getName()));
-								} else {
-
-									sender.sendMessage(
-											Lang.withPlaceHolder(Lang.PLAYER_HAS_NO_COMPANY, "%target%", args[1]));
-								}
-
-							} else {
-								sender.sendMessage(Lang.LOOKUP_PLAYER_COMPANY_HELP.toString());
-							}
-
-							break;
-						case "√ﬂ∞°":
-							if (MCUtils.mustBePlayer(sender)) {
-								Player player = (Player) sender;
-								if (MCUtils.mustHasCompany(player)) {
-									Company company = CompanyFuns.getCompany(player);
-
-									if (MCUtils.mustBeOwner(player.getName(), company, sender)) {
-
-										int maxSize = MineCompanyPlugin.plugin.getConfig().getInt("maxSize_Company",
-												1000);
-
-										if (company.getMaxSize() < maxSize) {
-
-											double price = CompanyFuns.calcAddMaxPrice(company.getMaxSize());
-
-											if (price != Double.NaN) {
-												if (MCUtils.mustHasMoney(player, price, sender)) {
-													MineCompanyPlugin.Eco.withdrawPlayer(player, price);
-
-													sender.sendMessage(
-															Lang.withPlaceHolder(Lang.PAID_MONEY, "%price%", price));
-													company.addMaxSize();
-
-													MCUtils.broadcast(Lang.withPlaceHolder(Lang.COMPANY_SET_MAXSIZE,
-															new String[] { "%company%", "%size%" }, company.getName(),
-															company.getMaxSize()));
-
-												}
-											} else {
-												sender.sendMessage(Lang.ERROR_CALC_PRICE.toString());
-											}
-
-										} else {
-
-											sender.sendMessage(Lang.withPlaceHolder(Lang.CANNOT_ADD_MAXSIZE_LIMIT,
-													"%max%", maxSize));
-										}
-
-									}
-
-								}
-
-							}
-
-							break;
-
-						default:
-							sender.sendMessage(Lang.COMPANY_HELP.toString());
-
-							break;
-						}
-					}
-
-				}.runTaskAsynchronously(plugin);
-
-			} else {
-				sender.sendMessage(Lang.COMPANY_HELP.toString());
-			}
-
-		}
-
-		return true;
-	}
-
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-		List<String> list = new ArrayList<>();
-
-		if (args.length < 2) {
-
-			list.add("¡§∫∏");
-			list.add("¿ß¿”");
-			list.add("¿ß¿”ºˆ∂Ù");
-			list.add("¿ß¿”∞≈¿˝");
-			list.add("ºˆ∂Ù");
-			list.add("∞≈¿˝");
-			list.add("√ ¥Î");
-			list.add("√ﬂπÊ");
-			list.add("ªÁø¯");
-			list.add("∫Œ»∏¿Â");
-			list.add("√¢æ˜");
-			list.add("≈ª≈");
-			list.add("«ÿ√º");
-			list.add("∏Ò∑œ");
-			list.add("¡∂»∏");
-			list.add("√ﬂ∞°");
-			list.add("¿Ø¡ˆ∫Ò∞ËªÍ");
-			list.add("¿Ã∏ß∫Ø∞Ê");
-
-			String finalArg = args[args.length - 1];
-			Iterator<String> it = list.iterator();
-			while (it.hasNext()) {
-				if (!it.next().startsWith(finalArg)) {
-					it.remove();
-				}
-			}
-
-			return list;
-		} else {
-			return null; // Default completion
-
-		}
-
-	}
+    }
 
 }

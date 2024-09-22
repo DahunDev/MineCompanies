@@ -32,7 +32,7 @@ public class Company {
 		Unpaid = 0;
 		Unpaid_times = 0;
 	}
-	
+
 	public boolean setUnPaid_times(int times) {
 		if (times >= 0) {
 			this.Unpaid_times = times;
@@ -41,13 +41,13 @@ public class Company {
 		return false;
 
 	}
-	
-	
+
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+
 	public boolean setUnPaid(double unpaid) {
 		if (unpaid >= 0) {
 			this.Unpaid = unpaid;
@@ -58,8 +58,8 @@ public class Company {
 	}
 
 
-	
-	
+
+
 	public boolean isMember(String player) {
 		return this.getMembers().contains(player.toLowerCase());
 	}
@@ -72,7 +72,7 @@ public class Company {
 		if(player == null && this.getLeader() == null) {
 			return true;
 		}
-		
+
 		return this.getLeader().equalsIgnoreCase(player.toLowerCase());
 	}
 
@@ -83,8 +83,8 @@ public class Company {
 	public double getCompanyValue() {
 		return this.CompanyValue;
 	}
-	
-	
+
+
 
 	public boolean addCompanyValue(double price) {
 
@@ -227,16 +227,16 @@ public class Company {
 
 		MineCompanyPlugin.plugin.removePlayer(name);
 	}
-	
-	
-	
+
+
+
 
 	public void subtractCompanyValue(double price) {
 		this.CompanyValue -= price;
 		if(this.CompanyValue < 0) {
 			this.CompanyValue = 0;
 		}
-		
+
 	}
 
 	public void setCompanyValue(double price) {
@@ -291,18 +291,18 @@ public class Company {
 			removeMember(name);
 			removeSubLeader(name);
 
-			
+
 			player.sendMessage(Lang.withPlaceHolder(Lang.LEAVE_COMPANY, "%company%",  this.name));
 
 			return true;
 
 		} else if (isLeader(name)) {
-			
-			
+
+
 			player.sendMessage(Lang.withPlaceHolder(Lang.CANNOT_LEAVE_COMPANY_LEADER,"%company%", this.name));
 			return false;
 		} else {
-			// È¸»ç Á÷¿ø/ÁöµµÀÚ°¡ ¾î´À°Íµµ ¾Æ´Ñ°æ¿ì
+			// íšŒì‚¬ ì§ì›/ì§€ë„ìžê°€ ì–´ëŠê²ƒë„ ì•„ë‹Œê²½ìš°
 			return false;
 		}
 	}
@@ -334,7 +334,7 @@ public class Company {
 	}
 
 	public void saveCompany() {
-		
+
 		if(MineCompanyPlugin.CompanyYML.data.getConfigurationSection("Companies") == null) {
 			MineCompanyPlugin.CompanyYML.data.createSection("Companies");
 		}
@@ -351,7 +351,7 @@ public class Company {
 		companySection.set("startDate", this.getStartDate());
 		companySection.set("maxSize", this.getMaxSize());
 		companySection.set("lastPaid", this.lastPaid);
-		
+
 
 	}
 
@@ -382,28 +382,28 @@ public class Company {
 	public int getUnpaid_times() {
 		return Unpaid_times;
 	}
-	
-	
-	
+
+
+
 	public void addUnpaid_times() {
 		addUnpaid_times(1);
 	}
-	
+
 	public void subtractUnpaid_times() {
 		subtractUnpaid_times(1);
 	}
-	
+
 	public void addUnpaid_times(int times) {
 		Unpaid_times+= times;
 	}
-	
+
 	public void subtractUnpaid_times(int times) {
 		Unpaid_times -= times;
 		if(Unpaid_times < 0) {
 			Unpaid_times =0;
 		}
 	}
-	
+
 	public String getUnpaid_times_String() {
 
 		if (Unpaid_times <= 0) {
@@ -415,8 +415,8 @@ public class Company {
 		}
 
 	}
-	
-	
+
+
 	public String getUnpaid_fee_String() {
 
 		if (Unpaid <= 0) {
@@ -428,8 +428,8 @@ public class Company {
 		}
 
 	}
-	
-	
+
+
 	public void increaseUnpaid_times(int unpaid_times) {
 		this.Unpaid_times += unpaid_times;
 	}

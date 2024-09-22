@@ -11,68 +11,62 @@ import net.daniel.MineCompany.MCUtils.MCUtils;
 import net.daniel.MineCompany.Utils.CompanyFuns;
 
 public class Migrate implements CommandExecutor {
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-		if (MCUtils.mustHasPerm(sender, "MineCompany.Admin.migrate")) {
+        if (!MCUtils.mustHasPerm(sender, "MineCompany.Admin.migrate")) {
+            return true;
+        }
 
-			if (args.length == 2) {
-				String from = args[0];
-				String to = args[1];
-				Company company = CompanyFuns.getCompany(from);
+        if (args.length != 2) {
+            sender.sendMessage(Lang.MIGRATE_PLAYER_HELP.toString());
+            return true;
+        }
 
-				if (company != null) {
+        String from = args[0];
+        String to = args[1];
+        Company company = CompanyFuns.getCompany(from);
 
-					if (CompanyFuns.getCompany(to) == null) {
+        if (company == null) {
+            sender.sendMessage(Lang.withPlaceHolder(Lang.PLAYER_HAS_NO_COMPANY, "%target%", from));
+            return true;
+        }
 
-						if (company.isMember(from)) {
+        if (CompanyFuns.getCompany(to) != null) {
+            sender.sendMessage(Lang.withPlaceHolder(Lang.ALREADY_HAS_COMPANY, "%target%", to));
+            return true;
+        }
 
-							company.removeMember(from);
-							company.addMember(to);
+        if (company.isMember(from)) {
 
-							sender.sendMessage(Lang.withPlaceHolder(Lang.MIGRATED_PLAYER_MEMBER,
-									new String[] { "%before%", "%company%", "%after%" }, from, company.getName(), to));
+            company.removeMember(from);
+            company.addMember(to);
 
-						}
+            sender.sendMessage(Lang.withPlaceHolder(Lang.MIGRATED_PLAYER_MEMBER,
+                    new String[]{"%before%", "%company%", "%after%"}, from, company.getName(), to));
 
-						if (company.isSubLeader(from)) {
+        }
 
-							company.removeSubLeader(from);
-							company.addMember(to);
-							company.changeToSubLeader(to);
+        if (company.isSubLeader(from)) {
 
-							sender.sendMessage(Lang.withPlaceHolder(Lang.MIGRATED_PLAYER_SUBLEADER,
-									new String[] { "%before%", "%company%", "%after%" }, from, company.getName(), to));
+            company.removeSubLeader(from);
+            company.addMember(to);
+            company.changeToSubLeader(to);
 
-						}
+            sender.sendMessage(Lang.withPlaceHolder(Lang.MIGRATED_PLAYER_SUBLEADER,
+                    new String[]{"%before%", "%company%", "%after%"}, from, company.getName(), to));
 
-						if (company.isLeader(from)) {
-							MineCompanyPlugin.plugin.removePlayer(from);
-							MineCompanyPlugin.playerCompanies.put(to.toLowerCase(), company.getName());
-							company.setLeader(to);
+        }
 
-							sender.sendMessage(Lang.withPlaceHolder(Lang.MIGRATED_PLAYER_LEADER,
-									new String[] { "%before%", "%company%", "%after%" }, from, company.getName(), to));
-						}
+        if (company.isLeader(from)) {
+            MineCompanyPlugin.plugin.removePlayer(from);
+            MineCompanyPlugin.playerCompanies.put(to.toLowerCase(), company.getName());
+            company.setLeader(to);
 
-					} else {
+            sender.sendMessage(Lang.withPlaceHolder(Lang.MIGRATED_PLAYER_LEADER,
+                    new String[]{"%before%", "%company%", "%after%"}, from, company.getName(), to));
+        }
 
-						sender.sendMessage(Lang.withPlaceHolder(Lang.ALREADY_HAS_COMPANY, "%target%", to));
-					}
-
-				} else {
-
-					sender.sendMessage(Lang.withPlaceHolder(Lang.PLAYER_HAS_NO_COMPANY, "%target%", from));
-				}
-
-			} else {
-
-				sender.sendMessage(Lang.MIGRATE_PLAYER_HELP.toString());
-
-			}
-
-		}
-
-		return true;
-	}
+        return true;
+    }
 }

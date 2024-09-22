@@ -112,7 +112,7 @@ public class MCUtils {
 			return false;
 		}
 
-		if (name.length() >= 2 && name.substring(0, name.length() - 2).contains("È¸»ç")) {
+		if (name.length() >= 2 && name.substring(0, name.length() - 2).contains("íšŒì‚¬")) {
 			sender.sendMessage(Lang.NO_COMPANY_NAME_COMPANY.toString());
 			return false;
 		}
@@ -225,8 +225,8 @@ public class MCUtils {
 	}
 
 	/**
-	 * @param ÇÃ·¹ÀÌ¾î p°¡ È¸»ç¿¡ ¼Ò¼ÓµÈ ¿©ºÎ, ¼Ò¼ÓµÇÁö ¾ÊÀº °æ¿ì p¿¡°Ô ¼Ò¼ÓµÈ È¸»ç°¡ ÀÖ¾î¾ßÇÑ´Ù°í ¸Ş¼¼Áö Àü¼Û
-	 * @return ÇÃ·¹ÀÌ¾î p°¡ È¸»ç¿¡ ¼Ò¼ÓµÈ ¿©ºÎ,
+	 * @param í”Œë ˆì´ì–´ pê°€ íšŒì‚¬ì— ì†Œì†ëœ ì—¬ë¶€, ì†Œì†ë˜ì§€ ì•Šì€ ê²½ìš° pì—ê²Œ ì†Œì†ëœ íšŒì‚¬ê°€ ìˆì–´ì•¼í•œë‹¤ê³  ë©”ì„¸ì§€ ì „ì†¡
+	 * @return í”Œë ˆì´ì–´ pê°€ íšŒì‚¬ì— ì†Œì†ëœ ì—¬ë¶€,
 	 */
 	public static boolean mustHasCompany(Player p) {
 		return mustHasCompany(p.getName(), p);

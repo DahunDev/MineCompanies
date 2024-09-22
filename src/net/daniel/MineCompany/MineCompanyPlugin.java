@@ -1,4 +1,3 @@
-
 package net.daniel.MineCompany;
 
 import java.io.File;
@@ -29,511 +28,502 @@ import net.daniel.MineCompany.data.InviteHolder;
 import net.daniel.MineCompany.data.MandateHolder;
 import net.milkbowl.vault.economy.Economy;
 
-public class MineCompanyPlugin extends JavaPlugin{
-	public static MineCompanyPlugin plugin;
+public class MineCompanyPlugin extends JavaPlugin {
+    public static MineCompanyPlugin plugin;
 
-	// ´ë¼Ò¹®ÀÚ ±¸ºĞ ¹®Á¦ (ÀÌ¸§Àº µÑ´Ù Ç×»ó ¼Ò¹®ÀÚ·Î ÀúÀå)
-	public static HashMap<String, Company> existCompanies;
-	// ´ë¼Ò¹®ÀÚ ±¸ºĞ ¹®Á¦ (MinePro¶û MinePro ´Ù¸§)
+    // ëŒ€ì†Œë¬¸ì êµ¬ë¶„ ë¬¸ì œ (ì´ë¦„ì€ ë‘˜ë‹¤ í•­ìƒ ì†Œë¬¸ìë¡œ ì €ì¥)
+    public static HashMap<String, Company> existCompanies;
+    // ëŒ€ì†Œë¬¸ì êµ¬ë¶„ ë¬¸ì œ (MineProë‘ MinePro ë‹¤ë¦„)
 
-	// player,company
-	public static HashMap<String, String> playerCompanies;
+    // player,company
+    public static HashMap<String, String> playerCompanies;
 
-	public static CompanyYML CompanyYML;
+    public static CompanyYML CompanyYML;
 
-	private ArrayList<String> playerPriceKey;
-	private ArrayList<Double> playerPriceValue;
+    private ArrayList<String> playerPriceKey;
+    private ArrayList<Double> playerPriceValue;
 
-	private ArrayList<String> allowedUnpaidKey;
-	private ArrayList<Integer> allowedUnpaidValue;
+    private ArrayList<String> allowedUnpaidKey;
+    private ArrayList<Integer> allowedUnpaidValue;
 
-	private ArrayList<String> playerKeepPriceKey;
-	private ArrayList<Double> playerKeepPriceValue;
+    private ArrayList<String> playerKeepPriceKey;
+    private ArrayList<Double> playerKeepPriceValue;
 
-	public static HashMap<String, InviteHolder> invites;
-	public static HashMap<String, DeleteConfirm> deleteConfirms;
-	public static HashMap<String, MandateHolder> mandateConfirms;
+    public static HashMap<String, InviteHolder> invites;
+    public static HashMap<String, DeleteConfirm> deleteConfirms;
+    public static HashMap<String, MandateHolder> mandateConfirms;
 
-	public static ArrayList<Company> sortedCompanyList;
+    public static ArrayList<Company> sortedCompanyList;
 
-	private static long lastsortedTime;
+    private static long lastsortedTime;
 
-	public static double startup_Cost;
-	public static double startup_min_money;
-	public static double rename_cost;
+    public static double startup_Cost;
+    public static double startup_min_money;
+    public static double rename_cost;
 
-	private double calcRankPeriod;
-	private double autoSave;
+    private double calcRankPeriod;
+    private double autoSave;
 
-	public static double default_company_value;
+    public static double default_company_value;
 
-	public static int invite_Sec;
-	public static int confirmSec;
+    public static int invite_Sec;
+    public static int confirmSec;
 
-	public static long keepTime;
-	public static String keepTimeString;
+    public static long keepTime;
+    public static String keepTimeString;
 
-	private final FileConfiguration langConfig = new YamlConfiguration();
-	public static Economy Eco;
+    private final FileConfiguration langConfig = new YamlConfiguration();
+    public static Economy Eco;
 
-	public static long getLastsortedTime() {
-		return lastsortedTime;
-	}
+    public static long getLastsortedTime() {
+        return lastsortedTime;
+    }
 
-	public static void calcCompanyList() {
+    public static void calcCompanyList() {
 
-		sortedCompanyList.clear();
+        sortedCompanyList.clear();
 
-		for (String key : existCompanies.keySet()) {
-			sortedCompanyList.add(existCompanies.get(key));
+        for (String key : existCompanies.keySet()) {
+            sortedCompanyList.add(existCompanies.get(key));
 
-		}
+        }
 
-		for (int i = 0; i < sortedCompanyList.size() - 1; i++) {
+        for (int i = 0; i < sortedCompanyList.size() - 1; i++) {
 
-			for (int j = 0; j < sortedCompanyList.size() - 1 - i; j++) {
-				if (sortedCompanyList.get(j).getValueForRank() < sortedCompanyList.get(j + 1).getValueForRank()) {
+            for (int j = 0; j < sortedCompanyList.size() - 1 - i; j++) {
+                if (sortedCompanyList.get(j).getValueForRank() < sortedCompanyList.get(j + 1).getValueForRank()) {
 
-					// swap
+                    // swap
 
-					Company temp = sortedCompanyList.get(j);
-					sortedCompanyList.set(j, sortedCompanyList.get(j + 1));
-					sortedCompanyList.set(j + 1, temp);
+                    Company temp = sortedCompanyList.get(j);
+                    sortedCompanyList.set(j, sortedCompanyList.get(j + 1));
+                    sortedCompanyList.set(j + 1, temp);
 
-				}
+                }
 
-			}
-		}
+            }
+        }
 
-		for (int i = 0; i < sortedCompanyList.size() - 1; i++) {
+        for (int i = 0; i < sortedCompanyList.size() - 1; i++) {
 
-			for (int j = 0; j < sortedCompanyList.size() - 1 - i; j++) {
-				if (sortedCompanyList.get(j).getValueForRank() == sortedCompanyList.get(j + 1).getValueForRank()) {
+            for (int j = 0; j < sortedCompanyList.size() - 1 - i; j++) {
+                if (sortedCompanyList.get(j).getValueForRank() == sortedCompanyList.get(j + 1).getValueForRank()) {
 
-					if (sortedCompanyList.get(j).getStartDate() < sortedCompanyList.get(j + 1).getStartDate()) {
-						// swap
+                    if (sortedCompanyList.get(j).getStartDate() < sortedCompanyList.get(j + 1).getStartDate()) {
+                        // swap
 
-						Company temp = sortedCompanyList.get(j);
-						sortedCompanyList.set(j, sortedCompanyList.get(j + 1));
-						sortedCompanyList.set(j + 1, temp);
-					}
+                        Company temp = sortedCompanyList.get(j);
+                        sortedCompanyList.set(j, sortedCompanyList.get(j + 1));
+                        sortedCompanyList.set(j + 1, temp);
+                    }
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-		lastsortedTime = System.currentTimeMillis();
+        lastsortedTime = System.currentTimeMillis();
 
-	}
+    }
 
-	public void onEnable() {
-		MineCompanyPlugin.plugin = this;
-		// copy default config
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-
-		if (!this.SetupEconomy()) {
-			Bukkit.getConsoleSender().sendMessage("¡×6¡×l[ Mine Company ] ¡×c¡×lEconomy ¡×fÇÃ·¯±×ÀÎÀÌ ÀÎ½ÄµÇÁö ¾Ê¾ÒÀ¸¹Ç·Î, ºñÈ°¼ºÈ­ µË´Ï´Ù.");
-			this.getServer().getPluginManager().disablePlugin((Plugin) this);
-			return;
-		}
-
-		CompanyYML = new CompanyYML();
-		existCompanies = new HashMap<String, Company>();
-		playerCompanies = new HashMap<String, String>();
-		invites = new HashMap<String, InviteHolder>();
-		deleteConfirms = new HashMap<String, DeleteConfirm>();
+    public void onEnable() {
+        MineCompanyPlugin.plugin = this;
+        // copy default config
+        getConfig().options().copyDefaults(true);
+        saveConfig();
 
-		playerPriceKey = new ArrayList<String>();
+        if (!this.SetupEconomy()) {
+            Bukkit.getConsoleSender().sendMessage("Â§6Â§l[ Mine Company ] Â§cÂ§lEconomy Â§fí”ŒëŸ¬ê·¸ì¸ì´ ì¸ì‹ë˜ì§€ ì•Šì•˜ìœ¼ë¯€ë¡œ, ë¹„í™œì„±í™” ë©ë‹ˆë‹¤.");
+            this.getServer().getPluginManager().disablePlugin((Plugin) this);
+            return;
+        }
 
-		playerPriceValue = new ArrayList<Double>();
+        CompanyYML = new CompanyYML();
+        existCompanies = new HashMap<String, Company>();
+        playerCompanies = new HashMap<String, String>();
+        invites = new HashMap<String, InviteHolder>();
+        deleteConfirms = new HashMap<String, DeleteConfirm>();
 
-		allowedUnpaidKey = new ArrayList<String>();
-		allowedUnpaidValue = new ArrayList<Integer>();
+        playerPriceKey = new ArrayList<String>();
 
-		playerKeepPriceKey = new ArrayList<String>();
-		playerKeepPriceValue = new ArrayList<Double>();
+        playerPriceValue = new ArrayList<Double>();
 
-		mandateConfirms = new HashMap<String, MandateHolder>();
-		sortedCompanyList = new ArrayList<Company>();
-		this.reloadConfiguration();
-		loadCompanyData();
-		
-		getCommand("È¸»ç").setExecutor(new CompanyCMD());
-		getCommand("È¸»ç°ü¸®").setExecutor(new CompanyManagement());
-		getCommand("È¸»ç°èÁ¤ÀÌÀü").setExecutor(new Migrate());
+        allowedUnpaidKey = new ArrayList<String>();
+        allowedUnpaidValue = new ArrayList<Integer>();
 
+        playerKeepPriceKey = new ArrayList<String>();
+        playerKeepPriceValue = new ArrayList<Double>();
 
+        mandateConfirms = new HashMap<String, MandateHolder>();
+        sortedCompanyList = new ArrayList<Company>();
+        this.reloadConfiguration();
+        loadCompanyData();
 
+        getCommand("íšŒì‚¬").setExecutor(new CompanyCMD());
+        getCommand("íšŒì‚¬ê´€ë¦¬").setExecutor(new CompanyManagement());
+        getCommand("íšŒì‚¬ê³„ì •ì´ì „").setExecutor(new Migrate());
 
-	}
 
-	private boolean SetupEconomy() {
-		if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
-			Bukkit.getConsoleSender().sendMessage("¡×6¡×l[ Mine Company ] ¡×c¡×lVault ¡×fÇÃ·¯±×ÀÎÀÌ ÀÎ½ÄµÇÁö ¾Ê¾ÒÀ¸¹Ç·Î, ¼­¹ö°¡ Á¾·á µË´Ï´Ù.");
-			Bukkit.shutdown();
-			return false;
-		}
-		Bukkit.getConsoleSender().sendMessage("¡×6¡×l[ Mine Company ] ¡×a¡×lVault ¡×fÇÃ·¯±×ÀÎÀÌ ÀÎ½Ä µÇ¾ú½À´Ï´Ù.");
-		RegisteredServiceProvider<Economy> EconomyProvider = this.getServer().getServicesManager()
-				.getRegistration(Economy.class);
-		if (EconomyProvider != null) {
-			Eco = (Economy) EconomyProvider.getProvider();
-		}
-		if (Eco != null) {
-			return true;
-		}
-		return false;
-	}
+    }
 
-	public void onDisable() {
-		saveLangConfigurations();
-		CompanyYML.saveData();
-	}
+    private boolean SetupEconomy() {
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+            Bukkit.getConsoleSender().sendMessage("Â§6Â§l[ Mine Company ] Â§cÂ§lVault Â§fí”ŒëŸ¬ê·¸ì¸ì´ ì¸ì‹ë˜ì§€ ì•Šì•˜ìœ¼ë¯€ë¡œ, ì„œë²„ê°€ ì¢…ë£Œ ë©ë‹ˆë‹¤.");
+            Bukkit.shutdown();
+            return false;
+        }
+        Bukkit.getConsoleSender().sendMessage("Â§6Â§l[ Mine Company ] Â§aÂ§lVault Â§fí”ŒëŸ¬ê·¸ì¸ì´ ì¸ì‹ ë˜ì—ˆìŠµë‹ˆë‹¤.");
+        RegisteredServiceProvider<Economy> EconomyProvider = this.getServer().getServicesManager()
+                .getRegistration(Economy.class);
+        if (EconomyProvider != null) {
+            Eco = (Economy) EconomyProvider.getProvider();
+        }
+        return Eco != null;
+    }
 
-	public File createCompanyDataFile() {
-		return new File(getDataFolder(), "data.yml");
-	}
+    public void onDisable() {
+        saveLangConfigurations();
+        CompanyYML.saveData();
+    }
 
-	public File createLangFile() {
-		return new File(getDataFolder(), "lang.yml");
-	}
+    public File createCompanyDataFile() {
+        return new File(getDataFolder(), "data.yml");
+    }
 
-	public void loadLangConfiguration() {
+    public File createLangFile() {
+        return new File(getDataFolder(), "lang.yml");
+    }
 
-		doInputOutput(() -> langConfig.load(createLangFile()), "Exception while lang load.");
+    public void loadLangConfiguration() {
 
-	}
+        doInputOutput(() -> langConfig.load(createLangFile()), "Exception while lang load.");
 
-	public void loadCompanyData() {
-		CompanyYML.setup();
-		CompanyYML.reloadCompanies();
-		playerCompanies.clear();
-		existCompanies.clear();
-		invites.clear();
-		deleteConfirms.clear();
-		mandateConfirms.clear();
+    }
 
-		if (CompanyYML.data.getConfigurationSection("players") == null) {
-			CompanyYML.data.createSection("players");
+    public void loadCompanyData() {
+        CompanyYML.setup();
+        CompanyYML.reloadCompanies();
+        playerCompanies.clear();
+        existCompanies.clear();
+        invites.clear();
+        deleteConfirms.clear();
+        mandateConfirms.clear();
 
-		}
+        if (CompanyYML.data.getConfigurationSection("players") == null) {
+            CompanyYML.data.createSection("players");
 
-		if (CompanyYML.data.getConfigurationSection("Companies") == null) {
-			CompanyYML.data.createSection("Companies");
+        }
 
-		}
-		
-		ConfigurationSection playerSection = CompanyYML.data.getConfigurationSection("players");
+        if (CompanyYML.data.getConfigurationSection("Companies") == null) {
+            CompanyYML.data.createSection("Companies");
 
-		
-		for (String name : playerSection.getKeys(false)) {
-			playerCompanies.put(name.toLowerCase(), playerSection.getString(name));
-		}
+        }
 
-		ConfigurationSection companySection = CompanyYML.data.getConfigurationSection("Companies");
+        ConfigurationSection playerSection = CompanyYML.data.getConfigurationSection("players");
 
-		for (String name : companySection.getKeys(false)) {
-			existCompanies.put(name.toLowerCase(), loadCompany(name.toLowerCase()));
-		}
 
-		calcCompanyList();
+        for (String name : playerSection.getKeys(false)) {
+            playerCompanies.put(name.toLowerCase(), playerSection.getString(name));
+        }
 
-	}
+        ConfigurationSection companySection = CompanyYML.data.getConfigurationSection("Companies");
 
-	public ArrayList<Double> getaddMaxPriceValue() {
-		return playerPriceValue;
+        for (String name : companySection.getKeys(false)) {
+            existCompanies.put(name.toLowerCase(), loadCompany(name.toLowerCase()));
+        }
 
-	}
+        calcCompanyList();
 
-	public ArrayList<String> getaddMaxPriceKey() {
-		return playerPriceKey;
-	}
+    }
 
-	public ArrayList<String> getAllowedUnpaidKey() {
-		return allowedUnpaidKey;
-	}
+    public ArrayList<Double> getaddMaxPriceValue() {
+        return playerPriceValue;
 
-	public ArrayList<Integer> getAllowedUnpaidValue() {
-		return allowedUnpaidValue;
-	}
+    }
 
-	public ArrayList<String> getKeepPriceKey() {
-		return playerKeepPriceKey;
-	}
+    public ArrayList<String> getaddMaxPriceKey() {
+        return playerPriceKey;
+    }
 
-	public ArrayList<Double> getKeepPriceValue() {
-		return playerKeepPriceValue;
-	}
+    public ArrayList<String> getAllowedUnpaidKey() {
+        return allowedUnpaidKey;
+    }
 
-	public void reloadConfiguration() {
+    public ArrayList<Integer> getAllowedUnpaidValue() {
+        return allowedUnpaidValue;
+    }
 
-		reloadConfig();
+    public ArrayList<String> getKeepPriceKey() {
+        return playerKeepPriceKey;
+    }
 
-		playerKeepPriceKey.clear();
-		playerKeepPriceValue.clear();
-		playerPriceKey.clear();
-		playerPriceValue.clear();
-		allowedUnpaidKey.clear();
-		allowedUnpaidValue.clear();
+    public ArrayList<Double> getKeepPriceValue() {
+        return playerKeepPriceValue;
+    }
 
-		invite_Sec = getConfig().getInt("invite_sec", 30);
+    public void reloadConfiguration() {
 
-		if (invite_Sec <= 1) {
-			getLogger().warning("invite_sec °ªÀº 0º¸´Ù Å« Á¤¼ö¿©¾ß ÇÕ´Ï´Ù.");
-			invite_Sec = 30;
-		}
+        reloadConfig();
 
-		confirmSec = getConfig().getInt("confirmSec", 15);
+        playerKeepPriceKey.clear();
+        playerKeepPriceValue.clear();
+        playerPriceKey.clear();
+        playerPriceValue.clear();
+        allowedUnpaidKey.clear();
+        allowedUnpaidValue.clear();
 
-		if (confirmSec <= 1) {
-			getLogger().warning("confirmSec °ªÀº 0º¸´Ù Å« Á¤¼ö¿©¾ß ÇÕ´Ï´Ù.");
-			confirmSec = 30;
-		}
+        invite_Sec = getConfig().getInt("invite_sec", 30);
 
-		autoSave = getConfig().getDouble("save-period", 180.0);
+        if (invite_Sec <= 1) {
+            getLogger().warning("invite_sec ê°’ì€ 0ë³´ë‹¤ í° ì •ìˆ˜ì—¬ì•¼ í•©ë‹ˆë‹¤.");
+            invite_Sec = 30;
+        }
 
-		if (autoSave <= 1) {
-			getLogger().warning("auto-save °ªÀº 1ÀÌ»óÀÇ ¼ıÀÚ¿©¾ß ÇÕ´Ï´Ù. (´ÜÀ§ ÃÊ)");
-			autoSave = 180.0;
-		}
+        confirmSec = getConfig().getInt("confirmSec", 15);
 
-		Set<String> temp = getConfig().getConfigurationSection("Company.addSize-cost").getKeys(false);
+        if (confirmSec <= 1) {
+            getLogger().warning("confirmSec ê°’ì€ 0ë³´ë‹¤ í° ì •ìˆ˜ì—¬ì•¼ í•©ë‹ˆë‹¤.");
+            confirmSec = 30;
+        }
 
-		for (String key : temp) {
-			playerPriceKey.add(key);
-			playerPriceValue.add(getConfig().getDouble("Company.addSize-cost." + key));
-		}
+        autoSave = getConfig().getDouble("save-period", 180.0);
 
-		temp = getConfig().getConfigurationSection("Company.maintenance_Fee_perPlayer").getKeys(false);
+        if (autoSave <= 1) {
+            getLogger().warning("auto-save ê°’ì€ 1ì´ìƒì˜ ìˆ«ìì—¬ì•¼ í•©ë‹ˆë‹¤. (ë‹¨ìœ„ ì´ˆ)");
+            autoSave = 180.0;
+        }
 
-		for (String key : temp) {
-			playerKeepPriceKey.add(key);
-			playerKeepPriceValue.add(getConfig().getDouble("Company.maintenance_Fee_perPlayer." + key));
-		}
+        Set<String> temp = getConfig().getConfigurationSection("Company.addSize-cost").getKeys(false);
 
-		temp = getConfig().getConfigurationSection("Company.allowed_Max_Unpaid_times").getKeys(false);
+        for (String key : temp) {
+            playerPriceKey.add(key);
+            playerPriceValue.add(getConfig().getDouble("Company.addSize-cost." + key));
+        }
 
-		for (String key : temp) {
-			allowedUnpaidKey.add(key);
-			allowedUnpaidValue.add(getConfig().getInt("Company.allowed_Max_Unpaid_times." + key));
-		}
+        temp = getConfig().getConfigurationSection("Company.maintenance_Fee_perPlayer").getKeys(false);
 
-		startup_min_money = getConfig().getDouble("Company.startup-minimum-balance", 20000000.0);
+        for (String key : temp) {
+            playerKeepPriceKey.add(key);
+            playerKeepPriceValue.add(getConfig().getDouble("Company.maintenance_Fee_perPlayer." + key));
+        }
 
-		if (startup_min_money < 0) {
-			startup_min_money = 20000000.0;
-			getLogger().warning("Company.startup-minimum-balance °ªÀº 0ÀÌ»óÀÇ ¼ıÀÚ¿©¾ß ÇÕ´Ï´Ù.");
+        temp = getConfig().getConfigurationSection("Company.allowed_Max_Unpaid_times").getKeys(false);
 
-		}
+        for (String key : temp) {
+            allowedUnpaidKey.add(key);
+            allowedUnpaidValue.add(getConfig().getInt("Company.allowed_Max_Unpaid_times." + key));
+        }
 
-		startup_Cost = getConfig().getDouble("Company.startup-cost", 7000000.0);
+        startup_min_money = getConfig().getDouble("Company.startup-minimum-balance", 20000000.0);
 
-		if (startup_Cost < 0) {
-			startup_Cost = 7000000.0;
-			getLogger().warning("Company.startup-cost °ªÀº 0ÀÌ»óÀÇ ¼ıÀÚ¿©¾ß ÇÕ´Ï´Ù.");
+        if (startup_min_money < 0) {
+            startup_min_money = 20000000.0;
+            getLogger().warning("Company.startup-minimum-balance ê°’ì€ 0ì´ìƒì˜ ìˆ«ìì—¬ì•¼ í•©ë‹ˆë‹¤.");
 
-		}
-		
-		rename_cost = getConfig().getDouble("Company.rename-cost", 7000000.0);
+        }
 
-		if (rename_cost < 0) {
-			rename_cost = 2000000.0;
-			getLogger().warning("Company.rename_cost °ªÀº 0ÀÌ»óÀÇ ¼ıÀÚ¿©¾ß ÇÕ´Ï´Ù.");
+        startup_Cost = getConfig().getDouble("Company.startup-cost", 7000000.0);
 
-		}
+        if (startup_Cost < 0) {
+            startup_Cost = 7000000.0;
+            getLogger().warning("Company.startup-cost ê°’ì€ 0ì´ìƒì˜ ìˆ«ìì—¬ì•¼ í•©ë‹ˆë‹¤.");
 
-		calcRankPeriod = getConfig().getDouble("calc-rank-period", 300.0);
+        }
 
-		if (calcRankPeriod <= 0) {
-			calcRankPeriod = 300.0;
-			getLogger().warning("calcRankPeriod °ªÀº 0º¸´Ù Å« ¼ıÀÚ¿©¾ß ÇÕ´Ï´Ù. (´ÜÀ§ ÃÊ)");
+        rename_cost = getConfig().getDouble("Company.rename-cost", 7000000.0);
 
-		}
+        if (rename_cost < 0) {
+            rename_cost = 2000000.0;
+            getLogger().warning("Company.rename_cost ê°’ì€ 0ì´ìƒì˜ ìˆ«ìì—¬ì•¼ í•©ë‹ˆë‹¤.");
 
-		default_company_value = getConfig().getDouble("Company.defaultCompany-value", 5000000.0);
-		if (default_company_value < 0) {
-			default_company_value = 5000000.0;
-			getLogger().warning("Company.defaultCompany-value °ªÀº 0ÀÌ»óÀÇ ¼ıÀÚ¿©¾ß ÇÕ´Ï´Ù.");
+        }
 
-		}
+        calcRankPeriod = getConfig().getDouble("calc-rank-period", 300.0);
 
-		getConfig().options().copyDefaults(true);
+        if (calcRankPeriod <= 0) {
+            calcRankPeriod = 300.0;
+            getLogger().warning("calcRankPeriod ê°’ì€ 0ë³´ë‹¤ í° ìˆ«ìì—¬ì•¼ í•©ë‹ˆë‹¤. (ë‹¨ìœ„ ì´ˆ)");
 
-		saveConfig();
+        }
 
-		loadLangConfiguration();
-		Lang.init(langConfig);
-		saveLangConfigurations();
+        default_company_value = getConfig().getDouble("Company.defaultCompany-value", 5000000.0);
+        if (default_company_value < 0) {
+            default_company_value = 5000000.0;
+            getLogger().warning("Company.defaultCompany-value ê°’ì€ 0ì´ìƒì˜ ìˆ«ìì—¬ì•¼ í•©ë‹ˆë‹¤.");
 
-		String time = getConfig().getString("À¯Áöºñ³³ºÎ°£°İ", "4D 0H 0M 0S");
-		String[] timePart = time.split(" ");
+        }
 
-		keepTime = 0;
-		keepTimeString = "";
-		try {
-			for (String t : timePart) {
+        getConfig().options().copyDefaults(true);
 
-				int timeAmount = 0;
+        saveConfig();
 
-				if (t.contains("D") || t.contains("d")) {
-					t = t.replaceAll("D", "").replaceAll("d", "");
+        loadLangConfiguration();
+        Lang.init(langConfig);
+        saveLangConfigurations();
 
-					timeAmount = Integer.parseInt(t);
-					if (timeAmount > 0) {
-						keepTime += timeAmount * 86400;
-						keepTimeString += timeAmount + Lang.DAYS.toString() + " ";
-					}
+        String time = getConfig().getString("ìœ ì§€ë¹„ë‚©ë¶€ê°„ê²©", "4D 0H 0M 0S");
+        String[] timePart = time.split(" ");
 
-				}
+        keepTime = 0;
+        keepTimeString = "";
+        try {
+            for (String t : timePart) {
 
-				if (t.contains("H") || t.contains("h")) {
-					t = t.replaceAll("H", "").replaceAll("h", "");
+                int timeAmount = 0;
 
-					timeAmount = Integer.parseInt(t);
-					if (timeAmount > 0) {
-						keepTime += timeAmount * 3600;
-						keepTimeString += timeAmount + Lang.HOURS.toString() + " ";
-					}
+                if (t.contains("D") || t.contains("d")) {
+                    t = t.replaceAll("D", "").replaceAll("d", "");
 
-				}
+                    timeAmount = Integer.parseInt(t);
+                    if (timeAmount > 0) {
+                        keepTime += timeAmount * 86400L;
+                        keepTimeString += timeAmount + Lang.DAYS.toString() + " ";
+                    }
 
-				if (t.contains("M") || t.contains("m")) {
-					t = t.replaceAll("M", "").replaceAll("m", "");
+                }
 
-					timeAmount = Integer.parseInt(t);
-					if (timeAmount > 0) {
-						keepTime += timeAmount * 60;
-						keepTimeString += timeAmount + Lang.MINUTES.toString() + " ";
-					}
+                if (t.contains("H") || t.contains("h")) {
+                    t = t.replaceAll("H", "").replaceAll("h", "");
 
-				}
+                    timeAmount = Integer.parseInt(t);
+                    if (timeAmount > 0) {
+                        keepTime += timeAmount * 3600L;
+                        keepTimeString += timeAmount + Lang.HOURS.toString() + " ";
+                    }
 
-				if (t.contains("S") || t.contains("s")) {
-					t = t.replaceAll("S", "").replaceAll("s", "");
+                }
 
-					timeAmount = Integer.parseInt(t);
-					if (timeAmount > 0) {
-						keepTime += timeAmount;
-						keepTimeString += timeAmount + Lang.SECONDS.toString() + " ";
-					}
+                if (t.contains("M") || t.contains("m")) {
+                    t = t.replaceAll("M", "").replaceAll("m", "");
 
-				}
+                    timeAmount = Integer.parseInt(t);
+                    if (timeAmount > 0) {
+                        keepTime += timeAmount * 60L;
+                        keepTimeString += timeAmount + Lang.MINUTES.toString() + " ";
+                    }
 
-			}
-			keepTime *= 1000;
-			keepTimeString = MCUtils.removeLastChar(keepTimeString);
+                }
 
-		} catch (Exception e) {
-			getLogger().warning("MineCompanyPlugin À¯Áöºñ³³ºÎ°£°İ ¼³Á¤ÀÌ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.");
-			keepTime = 4 * 24 * 3600 * 1000L;
-			keepTimeString = "4" + Lang.DAYS.toString();
-		}
-		
-		
-		
-		
-		
-		AutoTask.register(autoSave, calcRankPeriod, getConfig().getDouble("pay-maintanFee-interval", 600.0));
+                if (t.contains("S") || t.contains("s")) {
+                    t = t.replaceAll("S", "").replaceAll("s", "");
 
-	}
+                    timeAmount = Integer.parseInt(t);
+                    if (timeAmount > 0) {
+                        keepTime += timeAmount;
+                        keepTimeString += timeAmount + Lang.SECONDS.toString() + " ";
+                    }
 
-	public void saveLangConfigurations() {
+                }
 
-		doInputOutput(() -> langConfig.save(FileUtils.writeEnsure(createLangFile())), "Exception when lang save.");
-	}
+            }
+            keepTime *= 1000;
+            keepTimeString = MCUtils.removeLastChar(keepTimeString);
 
-	private void doInputOutput(ThrowsRunnable runnable, String errorMessage) {
-		try {
-			runnable.run();
-		} catch (FileNotFoundException ex) {
-			// Ignore
-		} catch (Exception ex) {
-			getLogger().log(Level.WARNING, errorMessage, ex);
-		}
-	}
+        } catch (Exception e) {
+            getLogger().warning("MineCompanyPlugin ìœ ì§€ë¹„ë‚©ë¶€ê°„ê²© ì„¤ì •ì´ ìœ íš¨í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
+            keepTime = 4 * 24 * 3600 * 1000L;
+            keepTimeString = "4" + Lang.DAYS;
+        }
 
-	public void Restart() {
-		getServer().getPluginManager().disablePlugin(this);
-		getServer().getPluginManager().enablePlugin(this);
-	}
 
-	public Company loadCompany(String name) {
-		Company company = existCompanies.get(name);
+        AutoTask.register(autoSave, calcRankPeriod, getConfig().getDouble("pay-maintanFee-interval", 600.0));
 
-		if (company == null) {
-			company = new Company(name);
+    }
 
-			
-			ConfigurationSection companySection = CompanyYML.data.getConfigurationSection("Companies." + name);
+    public void saveLangConfigurations() {
 
-			if (companySection == null) {
+        doInputOutput(() -> langConfig.save(FileUtils.writeEnsure(createLangFile())), "Exception when lang save.");
+    }
 
-				return null;
-			}
-			
-			company.setLeader(companySection.getString("leader", "Unknown Player"));
-			company.setSub_leaders((ArrayList<String>) companySection.getStringList("sub_leaders"));
-			company.setMembers((ArrayList<String>) companySection.getStringList("members"));
-			company.setUnPaid_times(companySection.getInt("unPaid_times" , 0));
-			company.setUnPaid(companySection.getDouble("unPaid_money" , 0));			
-			company.setMaxSize(companySection.getInt("maxSize", 8));
-			company.setCompanyValue(companySection.getDouble("value", 0L));
-			company.setStartDate(companySection.getLong("startDate", System.currentTimeMillis()));
-			company.lastPaid = companySection.getLong("lastPaid", company.getStartDate());
+    private void doInputOutput(ThrowsRunnable runnable, String errorMessage) {
+        try {
+            runnable.run();
+        } catch (FileNotFoundException ex) {
+            // Ignore
+        } catch (Exception ex) {
+            getLogger().log(Level.WARNING, errorMessage, ex);
+        }
+    }
 
-		}
-		return company;
-	}
-	
+    public void Restart() {
+        getServer().getPluginManager().disablePlugin(this);
+        getServer().getPluginManager().enablePlugin(this);
+    }
 
+    public Company loadCompany(String name) {
+        Company company = existCompanies.get(name);
 
-	public void deleteCompany(Company company) {
+        if (company != null) {
+            return company;
+        }
 
-		removePlayer(company.getLeader());
+        company = new Company(name);
 
-		for (String playerName : company.getSub_leaders()) {
-			removePlayer(playerName);
+        ConfigurationSection companySection = CompanyYML.data.getConfigurationSection("Companies." + name);
 
-		}
-		for (String playerName : company.getMembers()) {
-			removePlayer(playerName);
-		}
-		existCompanies.remove(company.getName());
+        if (companySection == null) {
+            return null;
+        }
 
-		CompanyYML.data.getConfigurationSection("Companies").set(company.getName(), null);
-		company = null;
-	}
+        company.setLeader(companySection.getString("leader", "Unknown Player"));
+        company.setSub_leaders((ArrayList<String>) companySection.getStringList("sub_leaders"));
+        company.setMembers((ArrayList<String>) companySection.getStringList("members"));
+        company.setUnPaid_times(companySection.getInt("unPaid_times", 0));
+        company.setUnPaid(companySection.getDouble("unPaid_money", 0));
+        company.setMaxSize(companySection.getInt("maxSize", 8));
+        company.setCompanyValue(companySection.getDouble("value", 0L));
+        company.setStartDate(companySection.getLong("startDate", System.currentTimeMillis()));
+        company.lastPaid = companySection.getLong("lastPaid", company.getStartDate());
 
-	public void updatePlayer(String player) {
-		if (CompanyYML.data.getConfigurationSection("players") == null) {
-			CompanyYML.data.createSection("players");
+        return company;
+    }
 
-		}
 
-		ConfigurationSection playerSection = CompanyYML.data.getConfigurationSection("players");
+    public void deleteCompany(Company company) {
 
-		{
-			player = player.toLowerCase();
-			String companyName = playerCompanies.get(player);
-			//CompanyYML.data.createSection("players." + player.toLowerCase());
-			
-			playerSection.set(player, companyName.toLowerCase());
-		}
+        removePlayer(company.getLeader());
 
-	}
+        for (String playerName : company.getSub_leaders()) {
+            removePlayer(playerName);
 
-	public void removePlayer(String playerName) {
-		playerName = playerName.toLowerCase();
-		playerCompanies.remove(playerName);
-		CompanyYML.data.getConfigurationSection("players").set(playerName, null);
+        }
+        for (String playerName : company.getMembers()) {
+            removePlayer(playerName);
+        }
+        existCompanies.remove(company.getName());
 
-	}
+        CompanyYML.data.getConfigurationSection("Companies").set(company.getName(), null);
+        company = null;
+    }
 
-	public FileConfiguration getLangConfig() {
-		return langConfig;
-	}
+    public void updatePlayer(String player) {
+        if (CompanyYML.data.getConfigurationSection("players") == null) {
+            CompanyYML.data.createSection("players");
+
+        }
+
+        ConfigurationSection playerSection = CompanyYML.data.getConfigurationSection("players");
+
+        {
+            player = player.toLowerCase();
+            String companyName = playerCompanies.get(player);
+            //CompanyYML.data.createSection("players." + player.toLowerCase());
+
+            playerSection.set(player, companyName.toLowerCase());
+        }
+
+    }
+
+    public void removePlayer(String playerName) {
+        playerName = playerName.toLowerCase();
+        playerCompanies.remove(playerName);
+        CompanyYML.data.getConfigurationSection("players").set(playerName, null);
+
+    }
+
+    public FileConfiguration getLangConfig() {
+        return langConfig;
+    }
 
 }

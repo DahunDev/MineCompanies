@@ -14,8 +14,7 @@ public class InviteHolder {
 		this.target = target;
 		this.inviter = inviter;
 		this.company = company;
-	//	time = System.currentTimeMillis();
-		
+
 	}
 
 	public String getTarget() {
